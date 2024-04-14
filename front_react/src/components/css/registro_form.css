@@ -1,0 +1,41 @@
+*{
+    font-family: 'Jost', sans-serif;
+}
+.registro{
+    width: 100%;
+    height: fit-content;
+    
+    margin-left: 0;
+    text-align: center;
+}
+.registro h1{
+    color: #000;
+    font-size: 20px;
+}
+.registro input{
+    width: 50%;
+    border-top: 0;
+    border-left: 0;
+    border-right: 0;
+    border-bottom: 2px solid #EB8114;
+    font-size: 20px;
+    font-weight: 600;
+    padding: 5px;
+    margin-top: 10px;
+}
+.registro input::placeholder{
+    color: rgb(194, 194, 194); 
+}
+.registro input[type='submit']{
+    background-color: #EB8114;
+    width: fit-content;
+    height: fit-content;
+    color: #fffF;
+    font-size: 20px;
+    padding: 5px 15px;
+    font-weight: 500;
+    position: relative;
+    right: 22%;
+    top: 5px;
+
+}

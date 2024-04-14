@@ -1,0 +1,32 @@
+*{
+    font-family: 'Jost', sans-serif;
+    
+}
+.contenedor{
+    width: max-content;
+    position: relative;
+    left: 250px;
+    border: 1px black;
+    display: flex;
+}
+.datos{
+    width: max-content;
+    margin: 5px;
+    box-shadow: -1px 2px 115px -51px rgba(0,0,0,0.16) inset;
+    -webkit-box-shadow: -1px 2px 115px -51px rgba(0,0,0,0.16) inset;
+   -moz-box-shadow: -1px 2px 115px -51px rgba(0,0,0,0.16) inset;
+   background-color: #EB8114;
+}
+.datos span{
+    color: #FFFF;
+    font-weight: 600;
+}
+.datos p{
+    padding: 5px 15px;
+    font-weight: 500;
+}
+.datos h1{
+    padding: 5px 15px;
+    color: #FFFF;
+    font-size: 20px;
+}

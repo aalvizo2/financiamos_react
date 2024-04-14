@@ -1,0 +1,29 @@
+*{
+    font-family: 'Jost', sans-serif;
+    
+}
+.sidebar{
+    height: 100%;
+    width: fit-content;
+    background-color: #184CD2;
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    
+}
+.sidebar a{
+    color: #FFFF;
+    padding-left: 50px;
+    padding-right: 50px;
+    margin-top: 5px;
+    cursor: pointer;
+    font-size: 20px;
+    font-weight: 600;
+    transition: 0.3s all ease;
+    text-decoration: none;
+
+}
+.sidebar a:hover{
+    transform: translateY(-5px);
+    text-decoration: underline;
+}
