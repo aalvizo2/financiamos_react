@@ -6,10 +6,12 @@ const login = require('./routes/login')
 const app = express();
 const credito= require('./routes/credito')
 const upload= require('./routes/upload')
+const path= require('path')
 
 // Configuración de middlewares
 app.use(bodyParser.json());
-
+//setting up /cedula folder
+app.use('/cedula', express.static(path.join(__dirname, 'cedula')))
 // Configuración de CORS
 const corsOptions = {
   origin: 'http://localhost:3000',

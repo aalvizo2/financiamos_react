@@ -11,7 +11,7 @@ const FileUploadForm = () => {
     const selectedFile = e.target.files[0];
     setFile(selectedFile);
     localStorage.setItem('fileName', selectedFile.name)
-    
+    window.location.href='/vista_previa'
   };
 
   const handleFileUpload = async (e) => {
@@ -28,7 +28,7 @@ const FileUploadForm = () => {
       });
 
       console.log('Archivo subido:', response.data);
-      document.window.location.href='/vista_previa'
+      window.location.href='/vista_previa'
     } catch (error) {
       console.error('Error al subir el archivo:', error);
     }
@@ -39,7 +39,7 @@ const FileUploadForm = () => {
       <h1>Documentos:</h1>
       <form onSubmit={handleFileUpload}>
         <input type="file" onChange={handleFileChange} id="btn-file" />
-        <label htmlFor="btn-file">Cedula</label>
+        <label htmlFor="btn-file">Cedula</label><br />
         <button type="submit">Enviar</button>
       </form>
       

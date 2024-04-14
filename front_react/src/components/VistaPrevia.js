@@ -33,6 +33,7 @@ export const VistaPrevia = () => {
     const getDocumento= ()=>{
       const FileName= localStorage.getItem('fileName')
       setIdentificacion(FileName)
+      
     } 
     getDocumento()
   }, [])
@@ -58,7 +59,7 @@ export const VistaPrevia = () => {
         <p><span>Sueldo Final:</span> {datos_laborales.sueldo_final}</p>
       </section>
       <section className='identificacion'>
-        {identificacion}
+        <img src={`http://localhost:8080/cedula/${identificacion}`} alt={identificacion}/>
       </section>
     </div>
   );

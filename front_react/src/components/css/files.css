@@ -1,13 +1,17 @@
 .documentos{
     width: 50%;
     height: fit-content;
-    border: 1px solid black;
+    box-shadow: -1px 5px 14px -4px rgba(0,0,0,0.75);
+   -webkit-box-shadow: -1px 5px 14px -4px rgba(0,0,0,0.75);
+   -moz-box-shadow: -1px 5px 14px -4px rgba(0,0,0,0.75);
     position: relative;
-    left: 20%;
+    left: 30%;
+    margin-top: 10px;
+    border-radius: 15px;
     display: flex;
     flex-direction: column;
     padding: 35px;
-    justify-content: center;
+    align-items: center;
 }
 .documentos input[type="file"]{
     display: none;
@@ -15,7 +19,19 @@
 }
 .documentos label{
     background-color: #EB8114;
-    width: 55px;
+    width: fit-content;
+    color: #FFF;
+    margin-left: 5px;
     padding: 5px 15px;
     box-shadow:  0px 0px 2px 0px rgba(0,0,0,0.3);
+}
+.documentos h1{
+    text-align: center;
+}
+.documentos button{
+    background-color: #EB8114;
+    color: #FFF;
+    margin: 5px;
+    border: 0;
+    padding: 5px 15px;
 }
