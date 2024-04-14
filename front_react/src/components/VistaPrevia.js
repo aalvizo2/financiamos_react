@@ -3,7 +3,8 @@ import './css/vista_previa.css';
 
 export const VistaPrevia = () => {
   const [datos, setDatos] = useState('');
-  const [datos_laborales, setDatosLAborales] = useState('');
+  const [datos_laborales, setDatosLAborales] = useState('')
+  const[identificacion, setIdentificacion] = useState('')
 
   useEffect(() => {
     const getDatos = () => {
@@ -28,6 +29,13 @@ export const VistaPrevia = () => {
 
     getDatosLaborales()
   }, [])
+  useEffect(()=>{
+    const getDocumento= ()=>{
+      const FileName= localStorage.getItem('fileName')
+      setIdentificacion(FileName)
+    } 
+    getDocumento()
+  }, [])
 
   return (
     <div className='contenedor'>
@@ -48,6 +56,9 @@ export const VistaPrevia = () => {
         <p><span>Antigüedad:</span> {datos_laborales.antiguedad}</p>
         <p><span>Sueldo Inicial:</span> {datos_laborales.sueldo_in}</p>
         <p><span>Sueldo Final:</span> {datos_laborales.sueldo_final}</p>
+      </section>
+      <section className='identificacion'>
+        {identificacion}
       </section>
     </div>
   );

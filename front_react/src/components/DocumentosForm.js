@@ -1,57 +1,50 @@
-import React, { useState, useEffect } from 'react'
-import axios from 'axios'
-import { Navigate } from 'react-router-dom'
-import './css/registro_form.css'
+import React, { useState } from 'react';
+import axios from 'axios';
+
+import './css/files.css';
+
 const FileUploadForm = () => {
-  const [file, setFile] = useState(null)
-  const [redirect, setRedirect] = useState(false)
-
-  useEffect(() => {
-    const handleBeforeUnload = () => {
-      if (file) {
-        localStorage.setItem('fileName', file.name)
-      }
-    }
-
-    window.addEventListener('beforeunload', handleBeforeUnload)
-
-    return () => {
-      window.removeEventListener('beforeunload', handleBeforeUnload)
-    }
-  }, [file])
+  const [file, setFile] = useState(null);
+ 
 
   const handleFileChange = (e) => {
-    setFile(e.target.files[0])
-  }
+    const selectedFile = e.target.files[0];
+    setFile(selectedFile);
+    localStorage.setItem('fileName', selectedFile.name)
+    
+  };
 
-  const handleFileUpload = async () => {
+  const handleFileUpload = async (e) => {
+    e.preventDefault();
     try {
-      const formData = new FormData()
-      formData.append('file', file)
+      const formData = new FormData();
+      formData.append('file', file);
 
       // Enviar archivo al servidor
       const response = await axios.post('http://localhost:8080/upload', formData, {
         headers: {
-          'Content-Type': 'multipart/form-data'
-        }
-      })
+          'Content-Type': 'multipart/form-data',
+        },
+      });
 
-      console.log('Archivo subido:', response.data)
-      setRedirect(true)
+      console.log('Archivo subido:', response.data);
+      document.window.location.href='/vista_previa'
     } catch (error) {
-      console.error('Error al subir el archivo:', error)
+      console.error('Error al subir el archivo:', error);
     }
-  }
+  };
 
   return (
-    <div className='registro'> 
+    <div className="documentos">
       <h1>Documentos:</h1>
-      <input type="file" onChange={handleFileChange} id="btn-file"/>
-      <label htmlFor='btn-file'>Cedula</label>
-      <button onClick={handleFileUpload}>Enviar</button>
-      {redirect && <Navigate to='/vista_previa'/>}
+      <form onSubmit={handleFileUpload}>
+        <input type="file" onChange={handleFileChange} id="btn-file" />
+        <label htmlFor="btn-file">Cedula</label>
+        <button type="submit">Enviar</button>
+      </form>
+      
     </div>
-  )
-}
+  );
+};
 
-export default FileUploadForm
+export default FileUploadForm;
