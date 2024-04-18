@@ -62,5 +62,6 @@ export const VistaPrevia = () => {
         <img src={`http://localhost:8080/cedula/${identificacion}`} alt={identificacion}/>
       </section>
     </div>
+    
   );
 };

@@ -1,45 +1,35 @@
-const express = require('express');
-const Router = express();
-const connection = require('./db');
-const { Console } = require('console');
+const express = require('express')
+const Router = express.Router()
+const connection = require('./db')
 
-console.log('hola desde credito');
+Router.use(express.json()) // Middleware para parsear el cuerpo de la solicitud como JSON
 
-Router.use(express.json()); // Middleware para parsear el cuerpo de la solicitud como JSON
+Router.post('/enviar', (req, res) => {
+  const { datos, datosLaborales, identificacion } = req.body
 
-Router.post('/registrar', (req, res) => {
-    const datos = req.body.datos; // Aquí recibimos todos los datos en un objeto JSON
+  const sql = `
+    INSERT INTO usuarios (nombre, direccion, telefono, cumple, cp, colonia, ciudad, pais, puesto, empresa, antiguedad, sueldo_in, sueldo_final, identificacion)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+  `
 
-    // Desestructuramos el objeto para obtener los campos individuales
-    const { nombre, direccion, telefono, cumple, cp, colonia, ciudad, pais } = datos;
+  const { nombre, direccion, telefono, cumple, cp, colonia, ciudad, pais } = JSON.parse(datos)
+  const { puesto, empresa, antiguedad, sueldo_in, sueldo_final } = JSON.parse(datosLaborales)
 
-    console.log(datos);
-
-    connection.query('INSERT INTO usuarios (nombre, direccion, telefono, cumple, cp, colonia, ciudad, pais) VALUES (?,?,?,?,?,?,?,?)',
-        [nombre, direccion, telefono, cumple, cp, colonia, ciudad, pais],
-        (err) => {
-            if (err) {
-                console.error('Error al conectar:', err);
-                res.status(400).send('Error al conectar');
-            } else {
-                console.log('Datos insertados correctamente');
-                res.status(200).send('Datos insertados correctamente');
-            }
-        });
+  connection.query(sql, [nombre, direccion, telefono, cumple, cp, colonia, ciudad, pais, puesto, empresa, antiguedad, sueldo_in, sueldo_final, identificacion], (error, results, fields) => {
+    if (error) {
+      console.error('Error al insertar en la base de datos:', error)
+      res.status(500).send('Error interno del servidor')
+      return
+    }
+    console.log('Datos insertados correctamente en la base de datos')
+    res.sendStatus(200)
+  })
 })
-Router.post('/registrar-datos-laborales', (req, res)=>{
-    const datos = req.body;
-    console.log(datos);
-    const { puesto, empresa, antiguedad, sueldo_in, sueldo_final} = datos; // Extraer los valores individuales de datos
-    connection.query('INSERT INTO usuarios(puesto, empresa, antiguedad, sueldo_in, sueldo_final) VALUES(?,?,?,?,?)', [puesto, empresa, antiguedad, sueldo_in, sueldo_final], (err)=>{
-      if(err) {
-        res.status(500).json({ error: 'Error al insertar datos laborales' }); // Enviar un objeto JSON con el mensaje de error
-      } else {
-        console.log('Datos laborales insertados');
-        res.status(200).json({ message: 'Datos laborales insertados correctamente' }); // Enviar un objeto JSON con el mensaje de éxito
-      }
-    })
- })
- 
+Router.get('/datos', (req, res)=>{
+  
+})
+
 module.exports = Router
+
+
 

@@ -27,11 +27,5 @@
 }
 .documentos h1{
     text-align: center;
-}
-.documentos button{
-    background-color: #EB8114;
-    color: #FFF;
-    margin: 5px;
-    border: 0;
-    padding: 5px 15px;
+    font-size: 20px;
 }

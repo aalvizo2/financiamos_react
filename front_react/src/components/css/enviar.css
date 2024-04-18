@@ -1,0 +1,11 @@
+.enviar-btn{
+    position: relative;
+    left: 250px;
+}
+.enviar-btn button{
+    background-color: #EB8114;
+    border: none;
+    color: #FFF;
+    padding: 5px 15px;
+    margin-left: 5px;
+}

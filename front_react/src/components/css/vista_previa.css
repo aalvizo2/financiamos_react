@@ -8,6 +8,7 @@
     left: 250px;
     border: 1px black;
     display: flex;
+    -ms-flex-direction: column-reverse;
 }
 .datos{
     width: max-content;
@@ -29,4 +30,17 @@
     padding: 5px 15px;
     color: #FFFF;
     font-size: 20px;
+}
+.identificacion{
+    width: 515px;
+    height: 300px;
+    border-radius: 15px;
+    box-shadow: 1px 1px 5px 1px rgba(0,0,0,0.75);
+    margin-top: 5px;
+}
+.identificacion img{
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    border-radius: 15px;
 }

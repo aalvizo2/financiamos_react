@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-
+import { BiCloudUpload } from 'react-icons/bi'
 import './css/files.css';
 
 const FileUploadForm = () => {
@@ -39,8 +39,8 @@ const FileUploadForm = () => {
       <h1>Documentos:</h1>
       <form onSubmit={handleFileUpload}>
         <input type="file" onChange={handleFileChange} id="btn-file" />
-        <label htmlFor="btn-file">Cedula</label><br />
-        <button type="submit">Enviar</button>
+        <label htmlFor="btn-file"><BiCloudUpload /> Cedula</label><br />
+        
       </form>
       
     </div>
