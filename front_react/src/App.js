@@ -10,7 +10,10 @@ import Indicador from './pages/Indicador';
 import Clientes from './pages/Clientes'
 import DatosLaborales from './pages/DatosLaborales'
 import Documentos from './pages/Documentos'
-import { VistaPreviaDoc } from './pages/VistaPreviaDoc';
+import { VistaPreviaDoc } from './pages/VistaPreviaDoc'
+import { SolicitudPrestamo } from './pages/SolicitudPrestamo'
+import { VistaPreviaPrestamoFront } from './pages/VistaPreviaPrestamoFront'
+import { Pagos } from './pages/Pagos';
 function App() {
     return (
         <BrowserRouter>
@@ -25,6 +28,9 @@ function App() {
                 <Route path='/datos_laborales' element={<DatosLaborales/>} />
                 <Route path='/documentos' element={<Documentos />} />
                 <Route path='/vista_previa' element={<VistaPreviaDoc />}/>
+                <Route path='/solicitud' element={<SolicitudPrestamo />} />
+                <Route path='/vista_previacredito' element={<VistaPreviaPrestamoFront />} />
+                <Route path='/pagar' element={<Pagos/>}/>
             </Routes>
         </BrowserRouter>
     );

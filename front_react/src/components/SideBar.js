@@ -6,9 +6,9 @@ export const SideBar = () => {
     <section className='sidebar'>
         <a href='/inicio'>Inicio</a>
         <a href='/registro'>Registro</a>
-        <a href='/pendientes'>Pendientes</a>
-        <a href='/credito'>Nuevo Credito</a>
-        <a href='/indicador'>Indicador</a>
+        <a href='/inicio'>Pendientes</a>
+        <a href='/pendientes'>Nuevo Credito</a>
+        <a href='/indicador'>Pagos</a>
         <a href='/clientes'>Clientes</a>
     </section>
   )

@@ -6,6 +6,7 @@ const login = require('./routes/login')
 const app = express();
 const credito= require('./routes/credito')
 const upload= require('./routes/upload')
+const plazo= require('./routes/plazo')
 const path= require('path')
 
 // Configuración de middlewares
@@ -32,6 +33,7 @@ app.use(session({
 app.use('/', login)
 app.use('/', credito)
 app.use('/', upload)
+app.use('/', plazo)
 // Ruta de prueba
 app.get('/', (req, res) => {
   res.send('Hola Mundo');

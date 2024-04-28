@@ -1,0 +1,28 @@
+function calcularPlazoYEnviarDatos(req, res) {
+    // Obtener la fecha de inicio desde MySQL (supongamos que ya tienes este código)
+
+    // Calcular el pago y la fecha de pago
+    const montoTotal = 1000; // Supongamos que el monto total es de $1000
+    const plazo = 3; // Plazo en meses
+    const interes = 0.05; // Porcentaje de interés
+    const frecuenciaDePago = 'mensual'; // Frecuencia de pago
+
+    const pagoPorPlazo = montoTotal / plazo;
+    const pagoConInteres = pagoPorPlazo * (1 + interes);
+
+    // Calcular fechas de pago
+    const fechasDePago = [];
+    const fechaInicio = moment(); // Supongamos que la fecha de inicio es hoy
+    let fechaPago = fechaInicio.clone(); // Usamos clone() para no modificar fechaInicio directamente
+    for (let i = 0; i < plazo; i++) {
+        fechasDePago.push(fechaPago.format('YYYY-MM-DD'));
+        fechaPago.add(1, frecuenciaDePago); // Añadimos 1 mes (o la frecuencia de pago) a la fecha de pago
+    }
+
+    // Enviar los datos a React
+    console.log({
+        fechaInicio: fechaInicio.format('YYYY-MM-DD'),
+        montoTotal,
+        pagoConInteres,
+        fechasDePago
+    });

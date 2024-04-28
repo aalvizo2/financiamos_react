@@ -39,3 +39,14 @@
     margin-bottom: 15px;
 
 }
+.alert{
+    width: max-content;
+    background-color: red;
+    color: #FFFF;
+    padding: 5px;
+    margin: 15px;
+    border-radius: 0;
+}
+select{
+    margin: 15px;
+}

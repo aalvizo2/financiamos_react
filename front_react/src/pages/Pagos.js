@@ -1,14 +1,13 @@
 import React from 'react'
+import { Abono } from '../components/Abono'
 import NavBar from '../components/NavBar'
 import SideBar from '../components/SideBar'
-import { NombreCliente } from '../components/NombreCliente'
-export const Pendientes = () => {
+export const Pagos = () => {
   return (
     <div>
         <NavBar/>
-        <SideBar />
-        <NombreCliente />
+        <SideBar/>
+        <Abono />
     </div>
   )
 }
-export default Pendientes

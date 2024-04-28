@@ -52,7 +52,7 @@ export const Enviar = () => {
             text: 'Formulario enviado con éxito',
             showCloseButton: true
           })
-          window.location.href='/inicio'
+          window.location.href='/pendientes'
           localStorage.removeItem('datos')
           localStorage.removeItem('datosLaborales')
           localStorage.removeItem('fileName')

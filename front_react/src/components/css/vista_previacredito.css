@@ -1,0 +1,31 @@
+.container{
+    position: relative;
+    margin-top: 5px;
+    left: 15px;
+    width: 50%;
+    height: max-content;
+    box-shadow: 1px 3px 5px 0px rgba(0,0,0,0.75);
+}
+.container h1{
+    color: #EB8114;
+    text-align: center;
+}
+.container span{
+    color: #EB8114;
+    font-weight: 600;
+}
+.listado{
+    border-top: 0;
+    border-left: 0;
+    border-right: 0;
+    border-bottom: 2px solid #EB8114;
+    padding: 5px;
+    display: flex;
+    justify-content: space-between;
+}
+.listado a{
+    background-color: #5cb85c;
+    color: #FFF;
+    padding: 5px 15px;
+    text-decoration: none;
+}

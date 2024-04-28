@@ -1,0 +1,36 @@
+.lista{
+    position: relative;
+    left: 225px;
+    box-shadow: 0px 0px 5px 2px rgba(0,0,0,0.75);
+    width: max-content;
+    height: max-content;
+    margin: 15px;
+}
+.lista h1{
+    font-size: 20px;
+    font-weight: 500;
+    text-align: center;
+    padding: 0 15px;
+}
+.lista ul{
+    text-align: justify;
+    padding: none;
+}
+.lista ul li{
+    list-style: none;
+    padding: 5px 15px;
+    
+}
+.lista a{
+    text-decoration: none;
+    background-color: #1E8449;
+    color: #FFF;
+    padding: 5px 15px;
+    border-radius: 3px;
+    box-shadow: 0, 5px, 3px, 2px rgba(0,0,0,0.75);
+    transition: all 0.3s;
+    cursor: pointer;
+}
+.solicitud a:hover{
+    transform: translateX(5px);
+}
