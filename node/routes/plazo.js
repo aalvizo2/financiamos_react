@@ -59,11 +59,13 @@ Router.get('/pagar', (req, res)=>{
     console.log(req.query.nombre)
     const nombre= req.query.nombre
     connection.query('SELECT * FROM usuarios WHERE nombre=?', [nombre], (err, datos)=>{
+     if(datos.length >0){
         if(err) throw err 
         console.log(datos)
         const {fechaInicio, frecuenciaPago, plazo, monto, nombre}= datos[0]
         console.log(fechaInicio)
         const plazoInicial= moment(fechaInicio, 'DD [de] MMMM [de] YYYY')
+        
         let fechaDePago
         if(frecuenciaPago === 'Mensual'){
             fechaDePago= plazoInicial.add(1,'month').format('DD [de] MMMM [de] YYYY')
@@ -73,12 +75,21 @@ Router.get('/pagar', (req, res)=>{
             fechaDePago= plazoInicial.add(15, 'days').format('DD [de] MMMM [de] YYYY')
             console.log(fechaDePago)
         }
-        res.json({fechaDePago: fechaDePago,
-                  frecuenciaPago: frecuenciaPago, 
-                  monto: monto, 
-                  cliente: nombre
+        connection.query('INSERT INTO prestamos (nombre, monto, fechaInicio, fechaPago, frecuenciaPago) VALUES(?,?,?,?,?)', [nombre, monto, fechaInicio, fechaDePago, frecuenciaPago], (err)=>{
+            if(err) throw err
+            console.log('datos insertados en tabla de prestamos ')
+        });
+        
+        res.json({mensaje: 'hola desde el backend'
         })
+     }else{
+        console.log('No se encontraron datos')
+     }
     })
+})
+Router.get('/recibirPago', (req, res)=>{
+    res.json({mensaje: 'hola mundo desde backend'})
+    console.log(moment().format('DD [de] MMMM [de] YYYY'))
 })
 
 
