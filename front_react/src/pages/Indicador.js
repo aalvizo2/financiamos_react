@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import NavBar from '../components/NavBar'
 import SideBar from '../components/SideBar'
-import { Pagos } from '../components/Pagos'
+import { Abono } from '../components/Abono'
 
 export const Indicador = () => {
 
@@ -9,7 +9,7 @@ export const Indicador = () => {
     <div>
         <NavBar/>
         <SideBar />
-        <Pagos />
+        <Abono />
     </div>
   )
 }

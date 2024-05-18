@@ -26,6 +26,7 @@ export const NavBar = () => {
   }
 
   return (
+   <>
     <nav>
       <img src={logo} alt='Logo Financiamos' />
       <div className='links'>
@@ -34,6 +35,9 @@ export const NavBar = () => {
         {usuario === null && <Navigate to="/" />}
       </div>
     </nav>
+    <div className='espacio'></div>
+   </>
+   
   );
 };
 

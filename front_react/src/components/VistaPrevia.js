@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Select} from 'react';
 import './css/vista_previa.css';
+const Option= Select
 
 export const VistaPrevia = () => {
   const [datos, setDatos] = useState('');
@@ -59,7 +60,7 @@ export const VistaPrevia = () => {
         <p><span>Sueldo Final:</span> {datos_laborales.sueldo_final}</p>
       </section>
       <section className='identificacion'>
-        <img src={`http://localhost:8080/cedula/${identificacion}`} alt={identificacion}/>
+        <img src={`http://localhost:8080/cedula/${datos.identificacion}`} alt='identificacion'/>
       </section>
     </div>
     
