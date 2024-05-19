@@ -8,6 +8,7 @@ const credito= require('./routes/credito')
 const upload= require('./routes/upload')
 const plazo= require('./routes/plazo')
 const path= require('path')
+const estadoCuenta= require('./routes/estado-cuenta')
 
 // Configuración de middlewares
 app.use(bodyParser.json());
@@ -34,6 +35,7 @@ app.use('/', login)
 app.use('/', credito)
 app.use('/', upload)
 app.use('/', plazo)
+app.use('/', estadoCuenta)
 // Ruta de prueba
 app.get('/', (req, res) => {
   res.send('Hola Mundo');

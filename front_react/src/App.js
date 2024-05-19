@@ -16,6 +16,7 @@ import { VistaPreviaPrestamoFront } from './pages/VistaPreviaPrestamoFront';
 import { Pagos } from './pages/Pagos';
 import { Solicitudes } from './pages/Solicitudes/Solicitudes';
 import Cliente from './pages/Solicitudes/Cliente'; // Import default, no destructuring
+import { Movimientos } from './pages/Movimientos/Movimientos';
 
 function App() {
     return (
@@ -35,7 +36,8 @@ function App() {
                 <Route path="/vista_previacredito" element={<VistaPreviaPrestamoFront />} />
                 <Route path="/solicitudes" element={<Solicitudes />} />
                 <Route path="/pagar" element={<Pagos />} />
-                <Route path="/cliente/:cliente" element={<Cliente />} /> {/* Correct path definition */}
+                <Route path="/cliente/:cliente" element={<Cliente />} /> 
+                <Route path='/movimientos' element={<Movimientos />}/>
             </Routes>
         </BrowserRouter>
     );

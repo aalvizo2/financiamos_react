@@ -12,6 +12,7 @@ export const SideBar = () => {
         <a href='/indicador'>Pagos</a>
         <a href='/clientes'>Clientes</a>
         <a href='/solicitudes'>Solicitudes</a>
+        <a href='/movimientos'>Movimientos</a>
     </section>
     <div className='espacio-sidebar'></div>
 </>

@@ -13,18 +13,22 @@ export const Abono = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedClient, setSelectedClient] = useState(null);
   const [form] = Form.useForm();
+  const [todosLosDatos, setTodosLosDatos] = useState([]); // Define una variable para almacenar todos los datos
 
   const formulario = async (values) => {
     try {
       const response = await axios.post('http://localhost:8080/filtrarCliente', { buscar: values.buscar });
       if (response.data && Array.isArray(response.data.resultados)) {
-        setResultados(response.data.resultados.map(cliente => ({
+        const datosFormateados = response.data.resultados.map(cliente => ({
           ...cliente,
           fechaInicio: moment(cliente.fechaInicio, 'YYYY-MM-DD').format('DD [de] MMMM [de] YYYY'),
           fechaPago: moment(cliente.fechaPago, 'YYYY-MM-DD').format('DD [de] MMMM [de] YYYY')
-        })));
+        }));
+        setResultados(datosFormateados);
+        setTodosLosDatos(datosFormateados); // Actualiza todosLosDatos con los datos filtrados
       } else {
         setResultados([]);
+        setTodosLosDatos([]); // En caso de que no haya resultados, reinicia todosLosDatos
       }
     } catch (err) {
       console.error('Error al buscar usuarios:', err);

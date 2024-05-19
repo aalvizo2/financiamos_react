@@ -25,7 +25,7 @@ useEffect(()=>{
       ciudad, 
       pais
     }
-    localStorage.set('datos', JSON.stringify(datos))
+    localStorage.setItem('datos', JSON.stringify(datos))
    }
    window.addEventListener('beforeunload', handleBeforeUnload)
 }, [nombre])
