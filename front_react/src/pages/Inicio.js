@@ -1,14 +1,14 @@
 
-import NavBar from '../components/NavBar'
-import SideBar from '../components/SideBar'
-
+import MainLayout from "../components/MainLayout";
+import HomePage from "./HomePage/HomePage";
 
 const Inicio = ({usuario}) => {
 
   return (
     <div>
-      <NavBar />
-      <SideBar />
+       <MainLayout>
+          <HomePage />
+       </MainLayout>
     </div>
   );
 }

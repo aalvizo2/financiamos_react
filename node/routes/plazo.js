@@ -4,9 +4,9 @@ const moment = require('moment');
 const connection = require('./db');
 require('moment/locale/es');
 
-/**
- * Endpoint to fetch loan data for a user.
- */
+
+
+
 Router.get('/datos_prestamo', (req, res) => {
     const nombre = req.query.nombre;
     connection.query('SELECT * FROM usuarios WHERE nombre=?', [nombre], (err, datos) => {
@@ -16,40 +16,52 @@ Router.get('/datos_prestamo', (req, res) => {
         }
 
         if (datos.length > 0) {
+            const interes = 0.1;
             const prestamo = datos[0];
-            const monto = prestamo.monto;
+            const montoOriginal = prestamo.monto;
+            const monto = montoOriginal;
+            console.log(monto);
             const plazo = prestamo.plazo;
-            const interes = 1.05;
             const fechaInicio = prestamo.fechaInicio;
             const fechaInicial = moment(fechaInicio, 'YYYY-MM-DD');
             const frecuenciaPago = prestamo.frecuenciaPago;
-            let montoTotal;
 
-            if (frecuenciaPago === 'Quincenal') {
-                if (plazo === '3 meses') {
-                    montoTotal = monto * interes / 6;
-                } else if (plazo === '1 año') {
-                    montoTotal = monto * interes / 24;
-                } else if (plazo === '2 años') {
-                    montoTotal = monto * interes / 48;
-                }
-            } else if (frecuenciaPago === 'Mensual') {
-                if (plazo === '3 meses') {
-                    montoTotal = monto * interes / 3;
-                } else if (plazo === '1 año') {
-                    montoTotal = monto * interes / 12;
-                } else if (plazo === '2 años') {
-                    montoTotal = monto * interes / 24;
-                }
+            // Calcula la fecha del próximo pago
+            const hoy = moment();
+            let proximoPago;
+
+            if (hoy.date() <= 15) {
+                proximoPago = moment().date(15);
+            } else {
+                proximoPago = moment().add(1, 'months').date(15);
             }
 
-            return res.json({ datos: datos, montoTotal: montoTotal });
+            if (hoy.date() > 15 && hoy.date() <= 30) {
+                proximoPago = moment().date(30);
+            } else if (hoy.date() > 30) {
+                proximoPago = moment().add(1, 'months').date(15);
+            }
+
+            // Calcula los días restantes hasta el próximo pago
+            const diasRestantes = proximoPago.diff(hoy, 'days');
+            const interesDiario = (montoOriginal * interes) / 15; // Interés diario para la quincena
+            const interesProporcional = interesDiario * diasRestantes; // Interés acumulado proporcional
+
+            // Ajusta el monto total y el pago mínimo en base al interés acumulado
+            const montoRebajado = monto - interesProporcional;
+            const pagoMinimoRebajado = interesProporcional;
+            console.log(montoRebajado)
+           
+            return res.json({ 
+                datos: datos, 
+                montoTotal: montoRebajado, 
+                pagoMinimo: pagoMinimoRebajado 
+            });
         } else {
             return res.status(404).json({ error: 'Usuario no encontrado' });
         }
     });
 });
-
 /**
  * Endpoint to fetch client data.
  */
@@ -70,6 +82,7 @@ Router.get('/datosCliente/:cliente', (req, res) => {
 Router.put('/actualizarEstatus/:cliente', (req, res) => {
     const cliente = req.params.cliente;
     const { estatus, monto, fechaInicio, frecuenciaPago } = req.body;
+    console.log(fechaInicio);
 
     if (estatus === 'Aprobado') {
         connection.query('UPDATE usuarios SET estado = ? WHERE nombre = ?', [estatus, cliente], (err) => {
@@ -80,14 +93,43 @@ Router.put('/actualizarEstatus/:cliente', (req, res) => {
 
             console.log('Estado actualizado correctamente en usuarios');
 
-            connection.query('INSERT INTO prestamos (nombre, monto, fechaInicio, frecuenciaPago) VALUES (?,?,?,?)', [cliente, monto, fechaInicio, frecuenciaPago], (err) => {
+            // Calcular el monto actualizado
+            const interes = 0.1;
+            const montoActualizado = monto;
+            const fechaInicial = moment(fechaInicio, 'YYYY-MM-DD');
+            const hoy = moment();
+            let proximoPago;
+
+            if (hoy.date() <= 15) {
+                proximoPago = moment().date(15);
+            } else {
+                proximoPago = moment().add(1, 'months').date(15);
+            }
+
+            if (hoy.date() > 15 && hoy.date() <= 30) {
+                proximoPago = moment().date(30);
+            } else if (hoy.date() > 30) {
+                proximoPago = moment().add(1, 'months').date(15);
+            }
+
+            const diasRestantes = proximoPago.diff(hoy, 'days');
+            const interesDiario = (monto * interes) / 15;
+            const interesProporcional = interesDiario * diasRestantes;
+            const montoRebajado = montoActualizado - interesProporcional;
+            const pagoMinimoRebajado = interesProporcional;
+
+            connection.query('INSERT INTO prestamos (nombre, monto, fechaInicio, frecuenciaPago) VALUES (?,?,?,?)', [cliente, montoRebajado, fechaInicio, frecuenciaPago], (err) => {
                 if (err) {
                     console.error('Error insertando datos en prestamos:', err);
                     return res.status(500).send('Error insertando datos en prestamos');
                 }
 
                 console.log('Datos insertados correctamente en prestamos');
-                return res.send('Datos actualizados correctamente');
+                return res.json({
+                    mensaje: 'Datos actualizados correctamente',
+                    montoActualizado: montoRebajado,
+                    pagoMinimo: pagoMinimoRebajado
+                });
             });
         });
     } else if (estatus === 'Rechazado') {
@@ -108,7 +150,7 @@ Router.put('/actualizarEstatus/:cliente', (req, res) => {
  * Endpoint to get the list of clients.
  */
 Router.get('/listaClientes', (req, res) => {
-    connection.query('SELECT nombre, estado FROM usuarios', (err, datos) => {
+    connection.query('SELECT nombre, estado, fechaInicio FROM usuarios', (err, datos) => {
         if (err) {
             console.error('Error al buscar clientes:', err);
             return res.status(500).json({ error: 'Error al buscar clientes' });
@@ -171,5 +213,9 @@ Router.post('/actualizarPago', (req, res) => {
         }
     );
 });
+Router.put('/actualizarMonto/:cliente', (req, res)=>{
+    const cliente= req.params
+    console.log('nombre del cliente', req.body)
+})
 
 module.exports = Router;

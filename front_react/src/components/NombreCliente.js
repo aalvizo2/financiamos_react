@@ -1,8 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { List, Typography, Button, Layout } from 'antd';
+import MainLayout from './MainLayout';
 import './css/clientes.css';
-import { Link} from 'react-router-dom';
 
+const { Title } = Typography;
+const { Content } = Layout;
 
 export const NombreCliente = () => {
   const [nombres, setNombres] = useState([]);
@@ -23,28 +26,31 @@ export const NombreCliente = () => {
 
     getDatos();
   }, []);
-  const guardarUsuario = (nombre)=>{
-    localStorage.setItem('nombre_persona', nombre)
-    
-    window.location.href='/solicitud'
-  }
-  return (
-    <div className='lista'>
-      <h1>Clientes:</h1>
-      <ul>
-      {nombres.length > 0 ? (
-        nombres.map((dato, index) => (
-          <li key={index}>{dato.nombre}
-          <a onClick={() => guardarUsuario(dato.nombre)}>Nuevo Prestamo</a>
-            
-         </li>
 
-        ))
-      ) : (
-        <div>No hay datos para mostrar</div>
-      )}
-      </ul>
-    </div>
+  const guardarUsuario = (nombre) => {
+    localStorage.setItem('nombre_persona', nombre);
+    window.location.href = '/solicitud';
+  };
+
+  return (
+    <MainLayout>
+      <Content style={{ padding: '0 50px', marginTop: 20 }}>
+        <div className="site-layout-content">
+          <Title level={2}>Clientes</Title>
+          <List
+            bordered
+            dataSource={nombres}
+            renderItem={(dato) => (
+              <List.Item>
+                <div className="list-item-content">
+                  {dato.nombre}
+                  <Button type="primary" onClick={() => guardarUsuario(dato.nombre)}>Nuevo Préstamo</Button>
+                </div>
+              </List.Item>
+            )}
+          />
+        </div>
+      </Content>
+    </MainLayout>
   );
 };
-

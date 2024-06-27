@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { Table, Button, Modal, Form, Input, message } from 'antd';
 import moment from 'moment';
+import MainLayout from './MainLayout'
 import 'moment/locale/es';
 import { SearchOutlined } from '@ant-design/icons';
 
@@ -82,7 +83,8 @@ export const Abono = () => {
   };
 
   return (
-    <div className='container'>
+    <MainLayout>
+        
       <Form layout="inline" onFinish={formulario}>
         <Form.Item name="buscar">
           <Input 
@@ -141,6 +143,8 @@ export const Abono = () => {
           </Form.Item>
         </Form>
       </Modal>
-    </div>
+     
+    </MainLayout>
+    
   );
 };

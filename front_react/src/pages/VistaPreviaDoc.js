@@ -7,8 +7,7 @@ import { Enviar } from '../components/Enviar'
 export const VistaPreviaDoc = () => {
   return (
     <div>
-        <NavBar />
-        <SideBar />
+        
         <VistaPrevia />
         <Enviar />
     </div>

@@ -6,8 +6,7 @@ import FormRegistro from '../components/FormRegistro'
 export const Registro = () => {
   return (
     <div>
-        <NavBar />
-        <SideBar />
+        
         <FormRegistro />
     </div>
   )

@@ -1,85 +1,86 @@
-import React, { useEffect, useState } from 'react'
-import './css/registro_form.css'
+import React, { useEffect, useState } from 'react';
+import { Form, Input, Button } from 'antd';
 import { Navigate } from 'react-router-dom';
+import MainLayout from './MainLayout';
+import './css/registro_form.css';
 
 const DatosLaboralesForm = () => {
-  const [puesto, setPuesto] = useState('');
-  const [empresa, setEmpresa] = useState('');
-  const [antiguedad, setAntiguedad] = useState('');
-  const [sueldo_in, setSueldoInicial]= useState('')
-  const[sueldo_final, setSueldoFinal]= useState('')
-  const [successRedirect, setSuccessRedirect]= useState('')
-  useEffect(()=>{
-    const AntesDeNoCargar= (e)=>{
-      const datosLaborales = {
-        puesto,
-        empresa,
-        antiguedad,
-        sueldo_in, 
-        sueldo_final
-      }
-      localStorage.setItem('datos_laborales', JSON.stringify(datosLaborales))
-    }
-    window.addEventListener('antesdecargar', AntesDeNoCargar)
-   
-  }, [puesto])
-  const RegistrarDatosLaborales = async (e) => {
-    e.preventDefault();
+  const [form] = Form.useForm();
+  const [successRedirect, setSuccessRedirect] = useState(false);
+
+  useEffect(() => {
+    const handleBeforeUnload = () => {
+      const datosLaborales = form.getFieldsValue();
+      localStorage.setItem('datos_laborales', JSON.stringify(datosLaborales));
+    };
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+    };
+  }, [form]);
+
+  const RegistrarDatosLaborales = async (values) => {
     try {
-      const datosLaborales = {
-        puesto,
-        empresa,
-        antiguedad,
-        sueldo_in, 
-        sueldo_final
-      }
-      localStorage.setItem('datosLaborales', JSON.stringify(datosLaborales))
-      setSuccessRedirect(true)
-      console.log(datosLaborales)
+      localStorage.setItem('datosLaborales', JSON.stringify(values));
+      setSuccessRedirect(true);
+      
     } catch (error) {
       console.error('Error al enviar los datos laborales', error);
     }
   };
 
   return (
-    <section className='registro'>
+    <MainLayout>
       <h1>Información Laboral:</h1>
-      <form onSubmit={RegistrarDatosLaborales}>
-        <input
-          type='text'
-          value={puesto}
-          onChange={(e) => setPuesto(e.target.value)}
-          placeholder='Puesto:'
-        />
-        <input
-          type='text'
-          value={empresa}
-          onChange={(e) => setEmpresa(e.target.value)}
-          placeholder='Empresa:'
-        />
-        <input
-          type='text'
-          value={antiguedad}
-          onChange={(e) => setAntiguedad(e.target.value)}
-          placeholder='Antigüedad:'
-        />
-        <input
-          type='number'
-          value={sueldo_in}
-          onChange={(e) => setSueldoInicial(e.target.value)}
-          placeholder='Sueldo Inicial:'
-        />
-        <input
-          type='number'
-          value={sueldo_final} onChange={(e) => setSueldoFinal(e.target.value)}
-          placeholder='Sueldo Final:'
-        />
-        <br />
-        <input type='submit' value='Ingresar' />
-        {successRedirect && <Navigate to='/documentos'/>}
-      </form>
-    </section>
+      <Form
+        form={form}
+        layout="vertical"
+        onFinish={RegistrarDatosLaborales}
+      >
+        <Form.Item
+          name="puesto"
+          label="Puesto"
+          rules={[{ required: true, message: 'Por favor, ingresa el puesto' }]}
+        >
+          <Input placeholder="Puesto" />
+        </Form.Item>
+        <Form.Item
+          name="empresa"
+          label="Empresa"
+          rules={[{ required: true, message: 'Por favor, ingresa la empresa' }]}
+        >
+          <Input placeholder="Empresa" />
+        </Form.Item>
+        <Form.Item
+          name="antiguedad"
+          label="Antigüedad"
+          rules={[{ required: true, message: 'Por favor, ingresa la antigüedad' }]}
+        >
+          <Input placeholder="Antigüedad" />
+        </Form.Item>
+        <Form.Item
+          name="sueldo_in"
+          label="Sueldo Inicial"
+          rules={[{ required: true, message: 'Por favor, ingresa el sueldo inicial' }]}
+        >
+          <Input placeholder="Sueldo Inicial" />
+        </Form.Item>
+        <Form.Item
+          name="sueldo_final"
+          label="Sueldo Final"
+          rules={[{ required: true, message: 'Por favor, ingresa el sueldo final' }]}
+        >
+          <Input placeholder="Sueldo Final" />
+        </Form.Item>
+        <Form.Item>
+          <Button type="primary" htmlType="submit">
+            Ingresar
+          </Button>
+        </Form.Item>
+      </Form>
+      {successRedirect && <Navigate to='/referencias' />}
+    </MainLayout>
   );
 };
 
-export default DatosLaboralesForm
+export default DatosLaboralesForm;

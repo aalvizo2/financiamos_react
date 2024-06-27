@@ -1,0 +1,20 @@
+.homepage {
+    padding: 24px;
+    background: #fff;
+    min-height: 360px;
+  }
+  
+  .homepage h1 {
+    font-size: 24px;
+    margin-bottom: 24px;
+  }
+  
+  .ant-card {
+    text-align: center;
+  }
+  
+  .ant-card .icon {
+    font-size: 36px;
+    margin-top: 16px;
+  }
+  

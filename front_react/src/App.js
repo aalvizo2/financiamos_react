@@ -17,6 +17,9 @@ import { Pagos } from './pages/Pagos';
 import { Solicitudes } from './pages/Solicitudes/Solicitudes';
 import Cliente from './pages/Solicitudes/Cliente'; // Import default, no destructuring
 import { Movimientos } from './pages/Movimientos/Movimientos';
+import { CorteCaja } from './pages/CorteCaja/CorteCaja';
+import Profile from './pages/Profile/Profile';
+import {Referencias } from './components/Referencias';
 
 function App() {
     return (
@@ -38,6 +41,9 @@ function App() {
                 <Route path="/pagar" element={<Pagos />} />
                 <Route path="/cliente/:cliente" element={<Cliente />} /> 
                 <Route path='/movimientos' element={<Movimientos />}/>
+                <Route path='/corteCaja' element={<CorteCaja/>}/>
+                <Route path='/profile' element={<Profile />} />
+                <Route path='/referencias' element={<Referencias />} />
             </Routes>
         </BrowserRouter>
     );

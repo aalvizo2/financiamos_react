@@ -1,43 +1,52 @@
-import React, { useState } from 'react';
-import './css/registro_form.css';
-import { useEffect } from 'react'
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import Swal from 'sweetalert2'
+import Swal from 'sweetalert2';
+import { Form, InputNumber, Button, Select, Layout, Typography, Input } from 'antd';
+import MainLayout from './MainLayout';
+import './css/registro_form.css';
 
-export const Solicitud = (props) => {
-  // Verifica si props.location.state está definido antes de acceder a nombre
-  const [nombre, setNombre]= useState('')
-  const [monto, setMonto]= useState(0)
-  const [frecuenciaPago, setfrecuenciaPago]= useState('')
-  const [plazo, setplazo]= useState('')
+const { Title } = Typography;
+const { Option } = Select;
+
+export const Solicitud = () => {
+  const [nombre, setNombre] = useState('');
+  const [monto, setMonto] = useState(0);
+  const [frecuenciaPago, setFrecuenciaPago] = useState('');
+  const [plazo, setPlazo] = useState('');
   const [fechaInicio, setFechaInicio] = useState(formatDate(new Date())); // Initialize with today's date
- 
+  const [form] = Form.useForm();
 
   // Function to format the date as "dd de MMMM de yyyy" (e.g., "20 de abril de 2024")
   function formatDate(date) {
     const options = { day: 'numeric', month: 'long', year: 'numeric' };
     return date.toLocaleDateString('es-ES', options);
   }
-  useEffect(()=>{
-   const usuario= localStorage.getItem('nombre_persona')
-   setNombre(usuario)
-  }, [])
-  const actualizar = async(e) => {
-    e.preventDefault();
-    console.log('actualizando datos')
+
+  useEffect(() => {
+    const usuario = localStorage.getItem('nombre_persona');
+    setNombre(usuario);
+  }, []);
+
+  const actualizar = async (values) => {
+    console.log('actualizando datos', values);
+    const montoConInteres = monto  // Calcular monto más el interés del 10%
+
     try {
       Swal.fire({
         icon: 'success',
-        title: 'Exito'
-      })
-      window.location.href='/vista_previacredito'
+        title: 'Éxito'
+      });
+
+      // Enviar los datos a la base de datos con el monto calculado con interés
       await axios.put('http://localhost:8080/solicitud', {
         nombre,
-        monto, 
-        frecuenciaPago, 
-        fechaInicio, 
-        plazo
-      })  
+        monto: montoConInteres,
+        frecuenciaPago: values.frecuenciaPago,
+        fechaInicio,
+        plazo: values.plazo
+      });
+
+      window.location.href = '/vista_previacredito';
     } catch (error) {
       Swal.fire({
         icon: 'error',
@@ -46,32 +55,66 @@ export const Solicitud = (props) => {
       });
     }
   };
-  
-  return (
-    <div className='registro'>
-      <h1>Monto del Préstamo para {nombre}</h1>
-      <form onSubmit={actualizar}>
-        <input type='hidden' value={nombre} onChange={(e)=>setNombre(e.target.value)}/>
-        <input type='number' value={monto} onChange={(e)=>setMonto(e.target.value)} placeholder='Monto'/>
-        {monto > 2000000 && (
-          <div className='alert'>Monto no puede ser mayor a 2,000,000.00 de pesos</div>
-        )}
-        <select value={frecuenciaPago} onChange={(e)=>setfrecuenciaPago(e.target.value)}>
-          <option>Selecciona Plazo de </option>
-          <option value='Quincenal'>Quincenal</option>
-          <option value='Mensual'>Mensual</option>
-        </select>
-        <select value={plazo} onChange={(e)=>setplazo(e.target.value)}>
-          <option>Plazo a pagar</option>
-          <option value='3 meses'>3 Meses</option>
-          <option value='1 año'>1 año</option>
-          <option value='2 años'>2 años</option>
-        </select>
 
-        <input type='hidden' value={fechaInicio} onChange={(e)=>setFechaInicio(e.target.value)} />
-        <input type='submit' value='Ingresar Datos' />
-        
-      </form>
-    </div>
-  )
-}
+  const handleMontoChange = (value) => {
+    if (value <= 2000000) {
+      setMonto(value);
+      form.setFieldsValue({ monto: value });
+    }
+  };
+
+  return (
+    <MainLayout>
+      <Layout.Content style={{ padding: '0 50px', maxWidth: '600px', margin: '0 auto' }}>
+        <Title level={2}>Monto del Préstamo para {nombre}</Title>
+        <Form
+          form={form}
+          layout="vertical"
+          onFinish={actualizar}
+        >
+          <Form.Item
+            name="monto"
+            label="Monto"
+            rules={[
+              {
+                required: true,
+                message: 'Por favor ingrese el monto'
+              },
+              {
+                validator: (_, value) =>
+                  value > 2000000 ? Promise.reject(new Error('Monto no puede ser mayor a 2,000,000.00 de pesos')) : Promise.resolve(),
+              }
+            ]}
+          >
+            <InputNumber
+              placeholder="Monto"
+              value={monto}
+              onChange={handleMontoChange}
+              min={0}
+              max={2000000}
+              style={{ width: '100%' }}
+            />
+          </Form.Item>
+          <Form.Item name="frecuenciaPago" label="Frecuencia de Pago" rules={[{ required: true, message: 'Por favor seleccione la frecuencia de pago' }]}>
+            <Select placeholder="Selecciona Frecuencia de Pago" onChange={(value) => setFrecuenciaPago(value)}>
+              <Option value="Quincenal">Quincenal</Option>
+              
+            </Select>
+          </Form.Item>
+          <Form.Item name="plazo" label="Plazo" rules={[{ required: true, message: 'Por favor seleccione el plazo' }]}>
+            <Select placeholder="Selecciona Plazo" onChange={(value) => setPlazo(value)}>
+              <Option value="6 meses">6 Meses</Option>
+              
+            </Select>
+          </Form.Item>
+          <Form.Item>
+            <Input type="hidden" value={fechaInicio} onChange={(e) => setFechaInicio(e.target.value)} />
+          </Form.Item>
+          <Form.Item>
+            <Button type="primary" htmlType="submit">Ingresar Datos</Button>
+          </Form.Item>
+        </Form>
+      </Layout.Content>
+    </MainLayout>
+  );
+};

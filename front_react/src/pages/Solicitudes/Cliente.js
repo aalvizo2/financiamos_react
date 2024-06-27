@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import SideBar from '../../components/SideBar';
-import NavBar from '../../components/NavBar';
+import MainLayout from '../../components/MainLayout';
 import axios from 'axios';
 import { Button, Select } from 'antd';
 import Swal from 'sweetalert2';
@@ -81,12 +80,12 @@ const Cliente = () => {
 
     return (
         <>  
-            <NavBar />
-            <SideBar />
-            <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-around' }}>
+          <MainLayout>
+          <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-around' }}>
                 {datos.map((dato) => (
                     <div key={dato.nombre} style={{ width: '300px', margin: '20px', border: '1px solid #ccc', borderRadius: '5px', padding: '20px' }}>
-                        <img src={`http://localhost:8080/cedula/${dato.identificacion}`} alt='identificacion' style={{ width: '100%', marginBottom: '20px' }} />
+                        <img src={`http://localhost:8080/cedula/${dato.cedula}`} alt='identificacion' style={{ width: '100%', marginBottom: '20px' }} />
+                        <img src={`http://localhost:8080/carta-laboral/${dato.carta_laboral}`} alt='Carta Laboral' style={{ width: '100%', marginBottom: '20px' }} />
                         <h2>{dato.nombre}</h2>
                         <p>Dirección: {dato.direccion}</p>
                         <p>Teléfono: {dato.telefono}</p>
@@ -111,6 +110,8 @@ const Cliente = () => {
                 </Select>
                 <Button type="primary" htmlType="submit" style={{ marginLeft: '10px' }}>Actualizar estado</Button>
             </form>
+          </MainLayout>
+            
         </>
     );
 };

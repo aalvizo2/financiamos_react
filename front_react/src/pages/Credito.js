@@ -4,8 +4,7 @@ import SideBar from '../components/SideBar'
 export const Credito = () => {
   return (
     <div>
-        <NavBar/>
-        <SideBar />
+        
     </div>
   )
 }

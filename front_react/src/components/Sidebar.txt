@@ -1,0 +1,130 @@
+import React, { useEffect, useState } from 'react';
+import { Menu, Layout } from 'antd';
+import {
+  UserOutlined,
+  HomeOutlined,
+  PlusOutlined,
+  FundProjectionScreenOutlined,
+  SolutionOutlined,
+  DollarCircleOutlined,
+  HistoryOutlined,
+  SnippetsOutlined
+} from '@ant-design/icons';
+import { Link, useLocation } from 'react-router-dom';
+import './css/sidebar.css';
+
+const { Sider } = Layout;
+
+const SideBar = ({ collapsed, onCollapse }) => {
+  const location = useLocation();
+  const [isMobile, setIsMobile] = useState(false);
+  const [permisos, setPermisos] = useState([]);
+  const [role, setRole] = useState('');
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  useEffect(() => {
+    if (isMobile) {
+      onCollapse(true);
+    }
+  }, [isMobile, onCollapse]);
+
+  useEffect(() => {
+    const user = localStorage.getItem('usuario');
+    console.log(user);
+    if (user) {
+      const userPermisos = JSON.parse(localStorage.getItem('permisos')) || [];
+      console.log('Permisos del usuario', userPermisos)
+      const userRole = localStorage.getItem('role') || '';
+      setPermisos(userPermisos);
+      setRole(userRole);
+    }
+  }, []);
+
+  const adminOptions = [
+    { key: '/inicio', icon: <HomeOutlined />, label: 'Inicio' },
+    { key: '/registro', icon: <UserOutlined />, label: 'Registro' },
+    { key: '/pendientes', icon: <PlusOutlined />, label: 'Nuevo Crédito' },
+    { key: '/indicador', icon: <FundProjectionScreenOutlined />, label: 'Pagos' },
+    { key: '/clientes', icon: <SolutionOutlined />, label: 'Clientes' },
+    { key: '/solicitudes', icon: <DollarCircleOutlined />, label: 'Solicitudes' },
+    { key: '/movimientos', icon: <HistoryOutlined />, label: 'Movimientos' },
+    { key: '/corteCaja', icon: <SnippetsOutlined />, label: 'Corte de Caja' },
+  ];
+
+  return (
+    <Sider
+      collapsible
+      collapsed={collapsed}
+      onCollapse={onCollapse}
+      style={{ backgroundColor: '#EB8114' }}
+    >
+      <Menu
+        mode='inline'
+        selectedKeys={[location.pathname]}
+        style={{ height: '100%', borderRight: 0 }}
+      >
+        {role === 'admin' ? (
+          adminOptions.map(option => (
+            <Menu.Item key={option.key} icon={option.icon}>
+              <Link to={option.key} className='no-underline'>{option.label}</Link>
+            </Menu.Item>
+          ))
+        ) : (
+          <>
+            {permisos.includes('inicio') && (
+              <Menu.Item key='/inicio' icon={<HomeOutlined />}>
+                <Link to='/inicio' className='no-underline'>Inicio</Link>
+              </Menu.Item>
+            )}
+            {permisos.includes('registro') && (
+              <Menu.Item key='/registro' icon={<UserOutlined />}>
+                <Link to='/registro' className='no-underline'>Registro</Link>
+              </Menu.Item>
+            )}
+            {permisos.includes('pendientes') && (
+              <Menu.Item key='/pendientes' icon={<PlusOutlined />}>
+                <Link to='/pendientes' className='no-underline'>Nuevo Crédito</Link>
+              </Menu.Item>
+            )}
+            {permisos.includes('indicador') && (
+              <Menu.Item key='/indicador' icon={<FundProjectionScreenOutlined />}>
+                <Link to='/indicador' className='no-underline'>Pagos</Link>
+              </Menu.Item>
+            )}
+            {permisos.includes('clientes') && (
+              <Menu.Item key='/clientes' icon={<SolutionOutlined />}>
+                <Link to='/clientes' className='no-underline'>Clientes</Link>
+              </Menu.Item>
+            )}
+            {permisos.includes('solicitudes') && (
+              <Menu.Item key='/solicitudes' icon={<DollarCircleOutlined />}>
+                <Link to='/solicitudes' className='no-underline'>Solicitudes</Link>
+              </Menu.Item>
+            )}
+            {permisos.includes('movimientos') && (
+              <Menu.Item key='/movimientos' icon={<HistoryOutlined />}>
+                <Link to='/movimientos' className='no-underline'>Movimientos</Link>
+              </Menu.Item>
+            )}
+            {permisos.includes('corteCaja') && (
+              <Menu.Item key='/corteCaja' icon={<SnippetsOutlined />}>
+                <Link to='/corteCaja' className='no-underline'>Corte de Caja</Link>
+              </Menu.Item>
+            )}
+          </>
+        )}
+      </Menu>
+    </Sider>
+  );
+};
+
+export default SideBar;

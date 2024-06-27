@@ -1,17 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Table, Button, Modal, message } from 'antd';
+import { Table, Button, Modal, message, Descriptions } from 'antd';
 import moment from 'moment';
 import 'moment/locale/es';
-import NavBar from '../../components/NavBar';
-import SideBar from '../../components/SideBar';
+import MainLayout from '../../components/MainLayout';
 
 const { Column } = Table;
 
 export const Movimientos = () => {
   const [clientes, setClientes] = useState([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [estadoCuenta, setEstadoCuenta] = useState(null);
+  const [estadoCuenta, setEstadoCuenta] = useState([]);
 
   useEffect(() => {
     obtenerClientes();
@@ -61,13 +60,12 @@ export const Movimientos = () => {
 
   return (
     <>
-      <NavBar />
-      <SideBar />
-      <div className='container'>
+     <MainLayout>
+     
         <Table dataSource={clientes} rowKey="nombre">
           <Column title="Nombre" dataIndex="nombre" key="nombre" />
           <Column
-            title="Fechas de Pago"
+            title="Última Fecha de Pago"
             dataIndex="ultima_fecha_pago"
             key="ultima_fecha_pago"
           />
@@ -87,17 +85,40 @@ export const Movimientos = () => {
           visible={isModalVisible}
           onOk={handleOk}
           onCancel={handleCancel}
+          width={800}
         >
-          {estadoCuenta && (
+          {estadoCuenta && estadoCuenta.length > 0 && (
             <div>
-              <h3>Cliente: {estadoCuenta.nombre}</h3>
-              <p>Saldo: {estadoCuenta.abono}</p>
-              <p>Movimientos: {moment(estadoCuenta.fecha_pago).format('DD [de] MMMM [de] YYYY')}</p>
-              {/* Otros detalles del estado de cuenta */}
+              <Descriptions title={`Cliente: ${estadoCuenta[0].nombre}`} bordered>
+                <Descriptions.Item label="Saldo Actual">
+                  {estadoCuenta.reduce((total, mov) => total + mov.abono, 0)}
+                </Descriptions.Item>
+                <Descriptions.Item label="Última Fecha de Pago">
+                  {moment(estadoCuenta[0].fecha_pago).format('DD [de] MMMM [de] YYYY')}
+                </Descriptions.Item>
+              </Descriptions>
+              <Table
+                dataSource={estadoCuenta}
+                rowKey="fecha_pago"
+                pagination={false}
+                style={{ marginTop: 20 }}
+              >
+                <Column
+                  title="Fecha de Pago"
+                  dataIndex="fecha_pago"
+                  key="fecha_pago"
+                  render={(text) => moment(text).format('DD [de] MMMM [de] YYYY')}
+                />
+                <Column title="Abono" dataIndex="abono" key="abono" />
+                {/* Otros detalles del movimiento */}
+              </Table>
             </div>
           )}
         </Modal>
-      </div>
+        
+     </MainLayout>
+      
+      
     </>
   );
 };

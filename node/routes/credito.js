@@ -6,26 +6,59 @@ const { json } = require('body-parser')
 Router.use(express.json()) // Middleware para parsear el cuerpo de la solicitud como JSON
 
 Router.post('/enviar', (req, res) => {
-  const { datos, datosLaborales, identificacion } = req.body
+  const { datos, datosLaborales, cedula, cartaLaboral, referencias } = req.body;
+  console.log('datos enviados del front', req.body);
 
-  const sql = `
-    INSERT INTO usuarios (nombre, direccion, telefono, cumple, cp, colonia, ciudad, pais, puesto, empresa, antiguedad, sueldo_in, sueldo_final, identificacion)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-  `
+  try {
+    // Parsear los datos JSON
+    const datosParsed = JSON.parse(datos);
+    const datosLaboralesParsed = JSON.parse(datosLaborales);
+    const referenciasData = JSON.parse(referencias).referencias; // Acceder a la propiedad 'referencias'
 
-  const { nombre, direccion, telefono, cumple, cp, colonia, ciudad, pais } = JSON.parse(datos)
-  const { puesto, empresa, antiguedad, sueldo_in, sueldo_final } = JSON.parse(datosLaborales)
+    // Desestructurar los datos
+    const { nombre, direccion, telefono, colonia, cumple, monto, fechaInicio, frecuenciaPago, plazo, estado } = datosParsed;
+    const { puesto, empresa, antiguedad, sueldo_in, sueldo_final } = datosLaboralesParsed;
 
-  connection.query(sql, [nombre, direccion, telefono, cumple, cp, colonia, ciudad, pais, puesto, empresa, antiguedad, sueldo_in, sueldo_final, identificacion], (error, results, fields) => {
-    if (error) {
-      console.error('Error al insertar en la base de datos:', error)
-      res.status(500).send('Error interno del servidor')
-      return
-    }
-    console.log('Datos insertados correctamente en la base de datos')
-    res.sendStatus(200)
-  })
-})
+    // Extraer nombres, domicilios y números de teléfono celular de las referencias
+    const nombresReferencias = [];
+    const domiciliosReferencias = [];
+    const celularesReferencias = [];
+
+    // Iterar sobre referenciasData para extraer los datos
+    referenciasData.forEach(referencia => {
+      nombresReferencias.push(referencia.referencia);
+      domiciliosReferencias.push(referencia.referencia_dom);
+      celularesReferencias.push(referencia.referencia_cel);
+    });
+
+    // Preparar la consulta SQL para insertar los datos en la tabla 'usuarios'
+    const sql = `INSERT INTO usuarios (
+      nombre, direccion, telefono, colonia, cumple, puesto, empresa, antiguedad, sueldo_in, sueldo_final, cedula, carta_laboral, 
+      referencia, referencia_dom, referencia_cel, monto, fechaInicio, frecuenciaPago, plazo, estado
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+
+    // Ejecutar la consulta SQL
+    connection.query(sql, [
+      nombre, direccion, telefono, colonia, cumple, puesto, empresa, antiguedad, sueldo_in, sueldo_final, cedula, cartaLaboral, 
+      JSON.stringify(nombresReferencias), JSON.stringify(domiciliosReferencias), JSON.stringify(celularesReferencias), monto, 
+      fechaInicio, frecuenciaPago, plazo, estado
+    ], (err, result) => {
+      if (err) {
+        console.error('Error al conectar con la base de datos:', err);
+        res.status(500).send({ message: 'Error interno del servidor' });
+      } else {
+        console.log('Datos insertados correctamente en la base de datos');
+        res.status(200).send({ message: 'Éxito al guardar los datos' });
+      }
+    });
+  } catch (error) {
+    console.error('Error al parsear los datos JSON:', error);
+    res.status(400).send({ message: 'Datos inválidos' });
+  }
+});
+
+
+
 /*Router.get('/datos', (req, res) => {
   connection.query('SELECT nombre FROM usuarios', (err, datos) => {
     if (err) {
@@ -83,6 +116,22 @@ Router.put('/solicitud', (req, res) => {
 
 });
 
+
+Router.get('/cliente/nombre/:nombre', (req, res) => {
+  const clientName = req.params.nombre;
+  
+  const sql = `SELECT * FROM usuarios WHERE nombre = ?`;
+  connection.query(sql, [clientName], (err, result) => {
+    if (err) {
+      console.error('Error al conectar con la base de datos:', err);
+      res.status(500).send({ message: 'Error interno del servidor' });
+    } else if (result.length === 0) {
+      res.status(404).send({ message: 'Cliente no encontrado' });
+    } else {
+      res.status(200).send(result[0]);
+    }
+  });
+});
 
 
 

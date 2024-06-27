@@ -1,84 +1,27 @@
-*{
-    font-family: 'Jost', sans-serif;
-    
-}
-.mainbar{
-    width: 100%;
-    height: 250px;
-    background-color: #EB8114;
+.mainbar {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #EB8114;
+  padding: 20px;
 }
 
-.logo{
-    position: absolute;
-    width: 250px;
-    height: 250px;
-    border-radius: 50%;
-    left: 40%;
-    top: 15%;
-    box-shadow: 2px 2px 4px 1px rgba(0,0,0,0.58);
-    -webkit-box-shadow: 2px 2px 4px 1px rgba(0,0,0,0.58);
-    -moz-box-shadow: 2px 2px 4px 1px rgba(0,0,0,0.58);
-    background-color: #FFFF;
-}
-.logo img{
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-.formulario{
-    
-    margin-left: 20%;
-    margin-top: 135px;
-    width: 60%;
-    height: fit-content;
-    padding: 5px;
-    box-shadow: 0px 2px 3px 0px rgba(0,0,0,0.33), 0px -2px 0px 0px rgba(0,0,0,0.0);
-    
-
-}
-.formulario h1{
-    text-align: center;
-}
-.formulario input{
-    width: 60%;
-    margin-left: 20%;
-    margin-top: 25px;
-    padding: 5px;
-    border-top: none;
-    border-left: none;
-    border-right: none;
-    border-bottom: 2px solid #EB8114;
-    
-    font-size: 15px;
-    font-weight: bold;
-    color: black;
+.logo img {
+  max-width: 150px;
 }
 
-/*.formulario input::placeholder{
-   color: rgb(194, 194, 194);
-}*/
-.formulario button{
-   background-color: #EB8114;
-   border: none;
-   padding: 5px 15px;
-   font-weight: bold;
-   font-size: 20px;
-   color: #FFFF;
-   margin-left: 20%;
-   margin-top: 5px;
-   margin-bottom: 35px;
+.content-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 70vh; /* Adjust this value to position the form higher or lower */
 }
-.success{
-    width: 50%;
-    position: relative;
-    left: 10%;
-    background-color: green;
-}
-.error{
-    width: 50%;
-    position: relative;
-    left: 20%;
-    background-color: red;
-    color: #FFFF;
-    padding: 5px 15px
+
+.formulario {
+  background: #fff;
+  padding: 40px; /* Increased padding */
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  width: 400px; /* Increased width */
 }
