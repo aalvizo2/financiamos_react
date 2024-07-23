@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Swal from 'sweetalert2';
-import { Form, InputNumber, Button, Select, Layout, Typography, Input } from 'antd';
+import { Form, InputNumber, Button, Select, Layout, Typography, Input, message } from 'antd';
 import MainLayout from './MainLayout';
 import './css/registro_form.css';
 
@@ -28,7 +28,7 @@ export const Solicitud = () => {
   }, []);
 
   const actualizar = async (values) => {
-    console.log('actualizando datos', values);
+    
     const montoConInteres = monto  // Calcular monto más el interés del 10%
 
     try {
@@ -48,11 +48,7 @@ export const Solicitud = () => {
 
       window.location.href = '/vista_previacredito';
     } catch (error) {
-      Swal.fire({
-        icon: 'error',
-        title: 'Error',
-        text: 'Hubo un error al procesar la solicitud. Por favor, inténtalo de nuevo más tarde.'
-      });
+      message.success({message: 'Operación realizada con éxito'});
     }
   };
 

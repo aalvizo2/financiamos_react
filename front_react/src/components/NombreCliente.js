@@ -35,7 +35,7 @@ export const NombreCliente = () => {
   return (
     <MainLayout>
       <Content style={{ padding: '0 50px', marginTop: 20 }}>
-        <div className="site-layout-content">
+        
           <Title level={2}>Clientes</Title>
           <List
             bordered
@@ -49,7 +49,7 @@ export const NombreCliente = () => {
               </List.Item>
             )}
           />
-        </div>
+        
       </Content>
     </MainLayout>
   );

@@ -127,8 +127,8 @@ Router.put('/solicitud', (req, res) => {
 Router.get('/cliente/nombre/:nombre', (req, res) => {
   const clientName = req.params.nombre;
   
-  const sql = `SELECT * FROM usuarios WHERE nombre = ?`;
-  connection.query(sql, [clientName], (err, result) => {
+  
+  connection.query('SELECT * FROM usuarios WHERE nombre LIKE?', [clientName], (err, result) => {
     if (err) {
       console.error('Error al conectar con la base de datos:', err);
       res.status(500).send({ message: 'Error interno del servidor' });

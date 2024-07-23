@@ -51,7 +51,7 @@ const SideBar = ({ collapsed, onCollapse }) => {
           const { role, permisos } = roleData;
           setRole(role);
           setPermisos(JSON.parse(permisos) || []); // Convertir permisos a array
-          console.log('permisos del usuario', JSON.parse(permisos)); // Asegúrate de que permisos es un array
+           
         }
       } catch (error) {
         console.error('Failed to fetch roles:', error);

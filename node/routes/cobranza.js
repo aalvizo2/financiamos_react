@@ -5,7 +5,7 @@ const connection= require('./db')
 Router.get('/cobranza', (req, res)=>{
     connection.query('SELECT * FROM cobranza', (err, dato)=>{
         if(err) throw err
-        console.log(dato)
+        
         res.json({datos: dato})
     })
 })

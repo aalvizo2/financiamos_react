@@ -11,6 +11,7 @@ export const Movimientos = () => {
   const [clientes, setClientes] = useState([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [estadoCuenta, setEstadoCuenta] = useState([]);
+  const [montoTotal, setMontoTotal] = useState(0);
 
   useEffect(() => {
     obtenerClientes();
@@ -37,9 +38,21 @@ export const Movimientos = () => {
   const mostrarEstadoCuenta = async (cliente) => {
     try {
       const response = await axios.get(`http://localhost:8080/estado-cuenta/${cliente}`);
-      console.log('Respuesta de /estado-cuenta:', response.data);  // Log response
+      
       if (response.data && response.data.estadoCuenta) {
         setEstadoCuenta(response.data.estadoCuenta);
+        setIsModalVisible(true);
+        // Realiza la llamada al endpoint `montoPrestamo`
+        const prestamoResponse = await axios.get(`http://localhost:8080/montoPrestamo/${cliente}`);
+        console.log('Respuesta de /montoPrestamo:', prestamoResponse.data);  // Log response
+        if (prestamoResponse.data && prestamoResponse.data.Data) {
+          setMontoTotal(prestamoResponse.data.Data);
+          console.log('monto total', prestamoResponse.data.Data)
+          setIsModalVisible(true);
+        } else {
+          setMontoTotal(0);
+        }
+        
         setIsModalVisible(true);
       } else {
         message.error('No se pudo obtener el estado de cuenta');
@@ -61,7 +74,6 @@ export const Movimientos = () => {
   return (
     <>
      <MainLayout>
-     
         <Table dataSource={clientes} rowKey="nombre">
           <Column title="Nombre" dataIndex="nombre" key="nombre" />
           <Column
@@ -91,11 +103,16 @@ export const Movimientos = () => {
             <div>
               <Descriptions title={`Cliente: ${estadoCuenta[0].nombre}`} bordered>
                 <Descriptions.Item label="Saldo Actual">
-                  {estadoCuenta.reduce((total, mov) => total + mov.abono, 0)}
+                {montoTotal <= 0 ? (
+                    <p>Préstamo Liquidado</p>
+                  ) : (
+                    new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP' }).format(montoTotal)
+                  )}
                 </Descriptions.Item>
                 <Descriptions.Item label="Última Fecha de Pago">
                   {moment(estadoCuenta[0].fecha_pago).format('DD [de] MMMM [de] YYYY')}
                 </Descriptions.Item>
+                
               </Descriptions>
               <Table
                 dataSource={estadoCuenta}
@@ -109,17 +126,30 @@ export const Movimientos = () => {
                   key="fecha_pago"
                   render={(text) => moment(text).format('DD [de] MMMM [de] YYYY')}
                 />
-                <Column title="Abono" dataIndex="abono" key="abono" />
-                <Column title='Abono Interes' dataIndex='interes' key='interes' />
+                <Column 
+                      title="Abono" 
+                      dataIndex="abono" 
+                      key="abono" 
+                      render={
+                        abono=> (
+                          new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP' }).format(abono)
+                        )
+                      }
+                />
+                <Column 
+                     title='Abono Interes' 
+                     dataIndex='interes' 
+                     key='interes'
+                     render={interes=> (
+                      new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP' }).format(interes)
+                     )}
+                />
                 
               </Table>
             </div>
           )}
         </Modal>
-        
      </MainLayout>
-      
-      
     </>
   );
 };

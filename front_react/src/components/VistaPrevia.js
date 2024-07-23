@@ -43,14 +43,7 @@ export const VistaPrevia = () => {
     setImagenGrande(imagen);
     setVisible(true);
   };
-  console.log({
-    cedula,
-    cartaLaboral,
-    referenciaFamiliar,
-    referenciaLaboral,
-    formatoReferencias,
-    paga
-  });
+ 
   
   return (
     <MainLayout>

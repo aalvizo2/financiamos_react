@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Table, Button, Modal, Form, Input, message } from 'antd';
 import moment from 'moment';
@@ -20,26 +20,38 @@ export const Abono = () => {
   const [form] = Form.useForm();
   const [todosLosDatos, setTodosLosDatos] = useState([]);
 
-  const formulario = async (values) => {
-    try {
-      const response = await axios.post('http://localhost:8080/filtrarCliente');
-      if (response.data && Array.isArray(response.data.resultados)) {
-        const datosFormateados = response.data.resultados.map(cliente => ({
-          ...cliente,
-          monto: Math.round(cliente.monto),
-          fechaInicio: moment(cliente.fechaInicio, 'YYYY-MM-DD').format('DD [de] MMMM [de] YYYY'),
-          fechaPago: moment(cliente.fechaPago, 'YYYY-MM-DD').format('DD [de] MMMM [de] YYYY')
-        }));
-        setResultados(datosFormateados);
-        setTodosLosDatos(datosFormateados);
-      } else {
-        setResultados([]);
-        setTodosLosDatos([]);
+  useEffect(() => {
+    // Cargar datos al principio
+    const fetchData = async () => {
+      try {
+        const response = await axios.post('http://localhost:8080/filtrarCliente');
+        if (response.data && Array.isArray(response.data.resultados)) {
+          const datosFormateados = response.data.resultados.map(cliente => ({
+            ...cliente,
+            monto: Math.round(cliente.monto),
+            fechaInicio: moment(cliente.fechaInicio, 'YYYY-MM-DD').format('DD [de] MMMM [de] YYYY'),
+            fechaPago: moment(cliente.fechaPago, 'YYYY-MM-DD').format('DD [de] MMMM [de] YYYY')
+          }));
+          setTodosLosDatos(datosFormateados);
+          setResultados(datosFormateados);
+        } else {
+          setResultados([]);
+          setTodosLosDatos([]);
+        }
+      } catch (err) {
+        console.error('Error al buscar usuarios:', err);
       }
-    } catch (err) {
-      console.error('Error al buscar usuarios:', err);
-    }
-  };
+    };
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    // Filtrar datos en tiempo real
+    const filteredData = todosLosDatos.filter(cliente =>
+      cliente.nombre.toLowerCase().includes(buscar.toLowerCase())
+    );
+    setResultados(filteredData);
+  }, [buscar, todosLosDatos]);
 
   const pagar = (record) => {
     setSelectedClient(record);
@@ -101,7 +113,7 @@ export const Abono = () => {
 
   return (
     <MainLayout>
-      <Form layout="inline" onFinish={formulario}>
+      <Form layout="inline">
         <Form.Item name="buscar">
           <Input 
             type='text'
@@ -111,21 +123,16 @@ export const Abono = () => {
             prefix={<SearchOutlined />}
           />
         </Form.Item>
-        <Form.Item>
-          <Button type="primary" htmlType="submit">
-            Buscar
-          </Button>
-        </Form.Item>
       </Form>
 
       <Table dataSource={resultados} rowKey="nombre">
         <Column title="Nombre" dataIndex="nombre" key="nombre" />
         <Column 
-              title="Monto" 
-              dataIndex="monto" 
-              key="monto" 
-              render={(text) => text <= 0 ? 'Préstamo Liquidado' : formatearPesos(text)} 
-            />
+          title="Monto" 
+          dataIndex="monto" 
+          key="monto" 
+          render={(text) => text <= 0 ? 'Préstamo Liquidado' : formatearPesos(text)} 
+        />
         <Column title="Fecha de Inicio" dataIndex="fechaInicio" key="fechaInicio" />
         <Column
           title="Fecha de Pago"
@@ -167,7 +174,7 @@ export const Abono = () => {
             label="Interés"
             rules={[{ required: true, message: 'Por favor ingrese el interés' }]}
           >
-            <Input type="number" />
+            <Input type="number" disabled/>
           </Form.Item>
         </Form>
       </Modal>

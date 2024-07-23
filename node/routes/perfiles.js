@@ -131,6 +131,7 @@ Router.put('/updateCliente', (req, res) => {
     antiguedad,
     sueldo_in,
     sueldo_final,
+    redes_sociales,
     id
   } = datos;
 
@@ -140,9 +141,9 @@ Router.put('/updateCliente', (req, res) => {
 
   connection.query(
     `UPDATE usuarios 
-     SET direccion=?, telefono=?, colonia=?, puesto=?, empresa=?, antiguedad=?, sueldo_in=?, sueldo_final=?, nombre=? 
+     SET direccion=?, telefono=?, colonia=?, puesto=?, empresa=?, antiguedad=?, sueldo_in=?, sueldo_final=?, nombre=?, redes_sociales=? 
      WHERE id=?`,
-    [direccion, telefono, colonia, puesto, empresa, antiguedad, sueldo_in, sueldo_final, nombre, id],
+    [direccion, telefono, colonia, puesto, empresa, antiguedad, sueldo_in, sueldo_final, nombre, redes_sociales, id],
     (err, results) => {
       if (err) {
         console.error('Error al actualizar', err);
@@ -155,9 +156,28 @@ Router.put('/updateCliente', (req, res) => {
       }
 
       res.status(200).send({ message: 'Operación realizada con éxito' });
+
+      const nombreBusqueda = `%${nombre}%`
+      connection.query('UPDATE documentos SET nombre=? WHERE nombre LIKE ? ', [nombre, nombreBusqueda], (err)=>{
+         if(err) throw err 
+         console.log('Documentos actualizada')
+      })
     }
   );
 });
+
+Router.get('/getImages/:clientName', (req, res)=>{
+  console.log(req.params)
+  const{clientName}= req.params
+
+
+  connection.query('SELECT * FROM documentos WHERE nombre=?', [clientName], (err, Data)=>{
+     if(err) throw err 
+     res.status(200).json({Data})
+  })
+  
+
+})
 
 
 module.exports= Router

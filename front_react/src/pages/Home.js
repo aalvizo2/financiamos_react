@@ -30,7 +30,7 @@ const LoginForm = () => {
         usuario: values.usuario,
         pass: values.pass,
       });
-      console.log('Respuesta del servidor');
+      
 
       // Guardar el usuario en localStorage
       localStorage.setItem('usuario', values.usuario);

@@ -69,4 +69,16 @@ Router.get('/montoPrestamos', (req, res) => {
      }
   })
 })
+
+
+Router.get('/montoPrestamo/:cliente', (req, res)=> {
+   const {cliente}= req.params
+   console.log(cliente)
+
+   connection.query('SELECT monto FROM prestamos WHERE nombre=?', [cliente], (err, monto)=>{
+     if(err) throw err 
+     const Data= monto[0].monto
+     res.status(200).json({Data})
+   })
+})
 module.exports = Router;

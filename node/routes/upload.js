@@ -44,10 +44,10 @@ Router.post('/upload', (req, res) => {
 
   moveFilesPromises.push(uploadFile(cedula, 'cedula'));
   moveFilesPromises.push(uploadFile(cartaLaboral, 'carta-laboral'));
-  moveFilesPromises.push(uploadFile(formatoReferencias, 'formato_referencias'));
+  moveFilesPromises.push(uploadFile(formatoReferencias, 'formato-referencias'));
   moveFilesPromises.push(uploadFile(pagare, 'pagare'));
-  moveFilesPromises.push(uploadFile(referenciaFamiliar, 'referencia_familiar'));
-  moveFilesPromises.push(uploadFile(referenciaLaboral, 'referencia_laboral'));
+  moveFilesPromises.push(uploadFile(referenciaFamiliar, 'referencia-familiar'));
+  moveFilesPromises.push(uploadFile(referenciaLaboral, 'referencia-laboral'));
 
   Promise.all(moveFilesPromises)
     .then(() => {

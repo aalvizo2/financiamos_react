@@ -10,8 +10,12 @@ export const ClientesLista = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [clienteActual, setClienteActual] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
+  const [documentos, setDocumentos] = useState([]);
+  const [filteredDatos, setFilteredDatos] = useState([]);
+  const [searchTerm, setSearchTerm] = useState('');
   const [form] = Form.useForm();
 
+  // Fetch data from the API
   const fetchData = async () => {
     try {
       const response = await axios.get('http://localhost:8080/listaClientes');
@@ -23,10 +27,12 @@ export const ClientesLista = () => {
     }
   };
 
+  // Load data on component mount
   useEffect(() => {
     fetchData();
   }, []);
 
+  // Open the modal and fetch client data
   const handleOpenModal = async (clientName) => {
     try {
       const response = await axios.get(`http://localhost:8080/cliente/nombre/${clientName}`);
@@ -34,27 +40,40 @@ export const ClientesLista = () => {
         setClienteActual(response.data);
         form.setFieldsValue(response.data); // Set form values
         setModalVisible(true);
+        getDocumentos(clientName);
       }
     } catch (error) {
       console.error("Error fetching client data: ", error);
     }
   };
 
+  const getDocumentos = async (clientName) => {
+    try {
+      const response = await axios.get(`http://localhost:8080/getImages/${clientName}`);
+      setDocumentos(response.data.Data);
+    } catch (error) {
+      console.error("Error fetching documents: ", error);
+    }
+  };
+
+  // Close the modal and reset state
   const handleCloseModal = () => {
     setModalVisible(false);
     setClienteActual(null);
     setIsEditing(false);
   };
 
+  // Enable editing mode
   const handleEdit = () => {
     setIsEditing(true);
   };
 
+  // Save the updated client data
   const handleSave = () => {
     form.validateFields()
       .then(values => {
-        values.id = clienteActual.id;  // Asegúrate de que `id` esté disponible en clienteActual
-        
+        values.id = clienteActual.id; // Ensure `id` is available in clienteActual
+
         axios.put('http://localhost:8080/updateCliente', values)
           .then(response => {
             if (response.status === 200) {
@@ -72,6 +91,7 @@ export const ClientesLista = () => {
       });
   };
 
+  // Table columns configuration
   const columns = [
     {
       title: 'Nombre',
@@ -97,7 +117,7 @@ export const ClientesLista = () => {
     {
       title: 'Fecha de Inicio',
       dataIndex: 'fechaInicio',
-      key: 'fechaInicio'
+      key: 'fechaInicio',
     },
     {
       title: 'Acciones',
@@ -107,7 +127,8 @@ export const ClientesLista = () => {
       ),
     }
   ];
-
+  
+  // Render references
   const renderReferencias = (referencias, domicilios, celulares) => {
     if (!referencias || !domicilios || !celulares) return null;
     const referenciasList = JSON.parse(referencias);
@@ -123,10 +144,27 @@ export const ClientesLista = () => {
     ));
   };
 
+
+  const handleSearchChange = (e) => {
+    const value = e.target.value.toLowerCase();
+    setSearchTerm(value);
+    // Filter data based on the search term
+    const filtered = datos.filter(cliente =>
+      cliente.nombre.toLowerCase().includes(value)
+    );
+    setFilteredDatos(filtered);
+  };
+
   return (
     <MainLayout>
       <h1>Usuarios</h1>
-      <Table dataSource={datos} columns={columns} />
+      <Input
+        placeholder="Buscar por nombre"
+        value={searchTerm}
+        onChange={handleSearchChange}
+        style={{ marginBottom: '16px', width: '300px' }}
+      />
+      <Table dataSource={filteredDatos} columns={columns} />
 
       {clienteActual && (
         <Modal
@@ -148,7 +186,7 @@ export const ClientesLista = () => {
               Cerrar
             </Button>,
           ]}
-          width={1200} // Ajusta el ancho del modal si es necesario
+          width={1200} // Adjust modal width if necessary
         >
           <Form
             form={form}
@@ -157,42 +195,57 @@ export const ClientesLista = () => {
           >
             <Row gutter={16}>
               <Col span={12}>
-                <Form.Item name="usuario" label="Usuario" style={{ marginBottom: '8px' }}>
-                  <Input disabled={!isEditing} />
-                </Form.Item>
-                <Form.Item name="rol" label="Rol" style={{ marginBottom: '8px' }}>
-                  <Input disabled={!isEditing} />
-                </Form.Item>
-                <Form.Item name="correo" label="Correo" style={{ marginBottom: '8px' }}>
-                  <Input disabled={!isEditing} />
-                </Form.Item>
                 <Form.Item name="nombre" label="Nombre" style={{ marginBottom: '8px' }}>
                   <Input disabled={!isEditing} />
                 </Form.Item>
-                <Form.Item name="apellidoPaterno" label="Apellido Paterno" style={{ marginBottom: '8px' }}>
-                  <Input disabled={!isEditing} />
-                </Form.Item>
-                <Form.Item name="apellidoMaterno" label="Apellido Materno" style={{ marginBottom: '8px' }}>
+                <Form.Item name="direccion" label="Dirección" style={{ marginBottom: '8px' }}>
                   <Input disabled={!isEditing} />
                 </Form.Item>
                 <Form.Item name="telefono" label="Teléfono" style={{ marginBottom: '8px' }}>
                   <Input disabled={!isEditing} />
                 </Form.Item>
+                <Form.Item name="colonia" label="Colonia" style={{ marginBottom: '8px' }}>
+                  <Input disabled={!isEditing} />
+                </Form.Item>
+                <Form.Item name="puesto" label="Puesto" style={{ marginBottom: '8px' }}>
+                  <Input disabled={!isEditing} />
+                </Form.Item>
+                <Form.Item name="empresa" label="Empresa" style={{ marginBottom: '8px' }}>
+                  <Input disabled={!isEditing} />
+                </Form.Item>
+                <Form.Item name="antiguedad" label="Antigüedad" style={{ marginBottom: '8px' }}>
+                  <Input disabled={!isEditing} />
+                </Form.Item>
+                <Form.Item name='redes_sociales' label='Redes Sociales' style={{ marginBottom: '8px' }}>
+                  <TextArea disabled={!isEditing} />
+                </Form.Item>
               </Col>
               <Col span={12}>
-                <Form.Item name="curp" label="CURP" style={{ marginBottom: '8px' }}>
+                <Form.Item name="sueldo_in" label="Sueldo Inicial" style={{ marginBottom: '8px' }}>
                   <Input disabled={!isEditing} />
                 </Form.Item>
-                <Form.Item name="fechaNacimiento" label="Fecha de Nacimiento" style={{ marginBottom: '8px' }}>
+                <Form.Item name="sueldo_final" label="Sueldo Final" style={{ marginBottom: '8px' }}>
                   <Input disabled={!isEditing} />
                 </Form.Item>
-                <Form.Item name="genero" label="Género" style={{ marginBottom: '8px' }}>
-                  <Input disabled={!isEditing} />
+                <Form.Item name="monto" label="Monto" style={{ marginBottom: '8px' }}>
+                  <Input disabled />
+                </Form.Item>
+                <Form.Item name="fechaInicio" label="Fecha de Inicio" style={{ marginBottom: '8px' }}>
+                  <Input disabled />
+                </Form.Item>
+                <Form.Item name="frecuenciaPago" label="Frecuencia de Pago" style={{ marginBottom: '8px' }}>
+                  <Input disabled />
+                </Form.Item>
+                <Form.Item name="plazo" label="Plazo" style={{ marginBottom: '8px' }}>
+                  <Input disabled />
+                </Form.Item>
+                <Form.Item name="estado" label="Estado" style={{ marginBottom: '8px' }}>
+                  <Input disabled />
                 </Form.Item>
               </Col>
               <Col span={24}>
                 <h3>Referencias</h3>
-                <Form.Item label="Referencias">
+                <Form.Item>
                   <div style={{ maxHeight: '300px', overflowY: 'auto' }}>
                     {renderReferencias(clienteActual.referencia, clienteActual.referencia_dom, clienteActual.referencia_cel)}
                   </div>
@@ -215,35 +268,48 @@ export const ClientesLista = () => {
                       alt="Carta Laboral"
                     />
                   )}
-                  {clienteActual.formato_referencias && (
+                  {documentos.map((documento) =>(
                     <Image
-                      width={100}
-                      src={`http://localhost:8080/formato-referencias/${clienteActual.formato_referencias}`}
-                      alt="Formato Referencias"
-                    />
-                  )}
-                  {clienteActual.pagare && (
+                       key={documento.pagare}
+                       width={100}
+                       src={`http://localhost:8080/pagare/${documento.pagare}`}
+                      alt="Carta Laboral"
+                   />
+                  
+                  ))}
+
+                  {documentos.map((documento) =>(
                     <Image
-                      width={100}
-                      src={`http://localhost:8080/pagare/${clienteActual.pagare}`}
-                      alt="Pagaré"
-                    />
-                  )}
-                  {clienteActual.referencia_familiar && (
+                       key={documento.formato_referencias}
+                       width={100}
+                       src={`http://localhost:8080/formato-referencias/${documento.formato_referencias}`}
+                      alt="Carta Laboral"
+                   />
+                  
+                  ))}
+
+                  {documentos.map((documento) =>(
                     <Image
-                      width={100}
-                      src={`http://localhost:8080/referencia-familiar/${clienteActual.referencia_familiar}`}
-                      alt="Referencia Familiar"
-                    />
-                  )}
-                  {clienteActual.referencia_laboral && (
+                       key={documento.referenciaFamilia}
+                       width={100}
+                       src={`http://localhost:8080/referencia-familiar/${documento.referenciaFamilia}`}
+                      alt="Carta Laboral"
+                   />
+                  
+                  ))}
+
+                  {documentos.map((documento) =>(
                     <Image
-                      width={100}
-                      src={`http://localhost:8080/referencia-laboral/${clienteActual.referencia_laboral}`}
-                      alt="Referencia Laboral"
-                    />
-                  )}
+                       key={documento.referencia_laboral}
+                       width={100}
+                       src={`http://localhost:8080/referencia-laboral/${documento.referencia_laboral}`}
+                      alt="Carta Laboral"
+                   />
+                  
+                  ))}
                 </div>
+
+                
               </Col>
             </Row>
           </Form>

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import MainLayout from '../../components/MainLayout';
 import axios from 'axios';
-import { Form, Input, Button, message, Select, Checkbox, notification } from 'antd';
+import { Form, Input, Button, message, Select, Checkbox} from 'antd';
 
 const { Option } = Select;
 
@@ -108,6 +108,7 @@ const Profile = () => {
                 <Checkbox value="solicitudes">Solicitudes</Checkbox>
                 <Checkbox value="movimientos">Movimientos</Checkbox>
                 <Checkbox value="corteCaja">Corte de Caja</Checkbox>
+                <Checkbox value="movimientos">Movimientos</Checkbox>
                 <Checkbox value='cobranza'>Cobranza</Checkbox>
                 <Checkbox value='gastos'>Gastos</Checkbox>
               </Checkbox.Group>

@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { Card, Row, Col } from 'antd';
+import { Card, Row, Col, Typography } from 'antd';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import './HomePage.css';
+
+const { Title } = Typography;
 
 const HomePage = () => {
   const [permisos, setPermisos] = useState([]);
@@ -18,7 +20,6 @@ const HomePage = () => {
           const { role, permisos } = roleData;
           setRole(role);
           setPermisos(JSON.parse(permisos) || []);
-          console.log('permisos del usuario', JSON.parse(permisos));
         }
       } catch (error) {
         console.error('Failed to fetch roles:', error);
@@ -36,19 +37,29 @@ const HomePage = () => {
     { key: '/solicitudes', icon: '💲', label: 'Solicitudes' },
     { key: '/movimientos', icon: '🔄', label: 'Movimientos' },
     { key: '/corteCaja', icon: '🧾', label: 'Corte de Caja' },
+    {key: '/gastos', icon: '💲', label: 'Gastos'},
+    {key: '/cobranza', icon: '💲', label: 'Cobranza'}
   ];
 
   return (
     <div className="homepage">
-      <h1>Dashboard</h1>
-      <Row gutter={[16, 16]}>
+      <Title level={2} className="homepage-title">Dashboard</Title>
+      <Row gutter={[16, 16]} justify="center">
         {permisos.map((permiso) => {
           const option = adminOptions.find(option => option.key === `/${permiso}`);
           return option ? (
-            <Col span={8} key={option.key}>
-              <Link to={option.key}>
-                <Card title={option.label} bordered={false}>
-                  <div className="icon">{option.icon}</div>
+            <Col span={8} xs={24} sm={12} md={8} lg={6} key={option.key}>
+              <Link to={option.key} className="homepage-link">
+                <Card
+                  className="homepage-card"
+                  bordered={false}
+                  hoverable
+                  cover={<div className="icon-container">{option.icon}</div>}
+                >
+                  <Card.Meta
+                    title={option.label}
+                    className="homepage-card-meta"
+                  />
                 </Card>
               </Link>
             </Col>
