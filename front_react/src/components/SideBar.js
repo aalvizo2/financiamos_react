@@ -13,6 +13,7 @@ import {
 import { Link, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import './css/sidebar.css';
+import { FaMoneyCheckAlt } from "react-icons/fa";
 
 const { Sider } = Layout;
 
@@ -68,6 +69,8 @@ const SideBar = ({ collapsed, onCollapse }) => {
     { key: '/solicitudes', icon: <DollarCircleOutlined />, label: 'Solicitudes' },
     { key: '/movimientos', icon: <HistoryOutlined />, label: 'Movimientos' },
     { key: '/corteCaja', icon: <SnippetsOutlined />, label: 'Corte de Caja' },
+    {key: '/cobranza', icon: <FaMoneyCheckAlt />, label: 'Cobranza'}, 
+    {key:'/gastos', icon: <FaMoneyCheckAlt />, label: 'Gastos'}
   ];
 
   return (

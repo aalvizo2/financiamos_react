@@ -48,7 +48,8 @@ const Cliente = () => {
                 Swal.fire({
                     title: 'Usuario Aprobado con éxito', 
                     icon: 'success', 
-                    showConfirmButton: true
+                    showConfirmButton: true, 
+                    monto: datos[0]?.monto
                 }).then((result) => {
                     // Obtener las solicitudes pendientes del localStorage
                     const solicitudesPendientes = JSON.parse(localStorage.getItem('solicitudesPendientes')) || [];

@@ -20,7 +20,8 @@ import { Movimientos } from './pages/Movimientos/Movimientos';
 import { CorteCaja } from './pages/CorteCaja/CorteCaja';
 import Profile from './pages/Profile/Profile';
 import {Referencias } from './components/Referencias';
-
+import Cobranza from './pages/Cobranza/Cobranza';
+import { Gasto } from './pages/Gastos/Gasto';
 function App() {
     return (
         <BrowserRouter>
@@ -44,6 +45,8 @@ function App() {
                 <Route path='/corteCaja' element={<CorteCaja/>}/>
                 <Route path='/profile' element={<Profile />} />
                 <Route path='/referencias' element={<Referencias />} />
+                <Route path='/cobranza' element={<Cobranza />} />
+                <Route path='/gastos' element={<Gasto />} />
             </Routes>
         </BrowserRouter>
     );

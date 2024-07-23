@@ -31,16 +31,19 @@ const Profile = () => {
 
   const handleSubmit = async (values) => {
     try {
-      await axios.post('http://localhost:8080/create-user', values);
-      message.success('Usuario creado correctamente');
-      localStorage.setItem('permisos', JSON.stringify(values.permisos));
-      notification.success({message: 'Usuario creado correctamente'})
-      window.location.href = '/inicio';
+      const response = await axios.post('http://localhost:8080/create-user', values);
+      if (response.status === 200) {
+        message.success({ message: response.data.message });
+        localStorage.setItem('permisos', JSON.stringify(values.permisos));
+        window.location.href = '/inicio';
+      } else {
+        message.info({ message: response.data.message });
+      }
     } catch (error) {
       message.error('Error al crear usuario');
     }
   };
-
+  
   const changePassword = async (value) => {
     try {
       const user = localStorage.getItem('usuario');
@@ -105,6 +108,8 @@ const Profile = () => {
                 <Checkbox value="solicitudes">Solicitudes</Checkbox>
                 <Checkbox value="movimientos">Movimientos</Checkbox>
                 <Checkbox value="corteCaja">Corte de Caja</Checkbox>
+                <Checkbox value='cobranza'>Cobranza</Checkbox>
+                <Checkbox value='gastos'>Gastos</Checkbox>
               </Checkbox.Group>
             </Form.Item>
             <Form.Item>

@@ -2,11 +2,15 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { Table, Button, Modal, Form, Input, message } from 'antd';
 import moment from 'moment';
-import MainLayout from './MainLayout'
+import MainLayout from './MainLayout';
 import 'moment/locale/es';
 import { SearchOutlined } from '@ant-design/icons';
 
 const { Column } = Table;
+
+const formatearPesos = (valor) => {
+  return new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP' }).format(valor);
+};
 
 export const Abono = () => {
   const [buscar, setBuscar] = useState('');
@@ -14,22 +18,23 @@ export const Abono = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedClient, setSelectedClient] = useState(null);
   const [form] = Form.useForm();
-  const [todosLosDatos, setTodosLosDatos] = useState([]); // Define una variable para almacenar todos los datos
+  const [todosLosDatos, setTodosLosDatos] = useState([]);
 
   const formulario = async (values) => {
     try {
-      const response = await axios.post('http://localhost:8080/filtrarCliente', { buscar: values.buscar });
+      const response = await axios.post('http://localhost:8080/filtrarCliente');
       if (response.data && Array.isArray(response.data.resultados)) {
         const datosFormateados = response.data.resultados.map(cliente => ({
           ...cliente,
+          monto: Math.round(cliente.monto),
           fechaInicio: moment(cliente.fechaInicio, 'YYYY-MM-DD').format('DD [de] MMMM [de] YYYY'),
           fechaPago: moment(cliente.fechaPago, 'YYYY-MM-DD').format('DD [de] MMMM [de] YYYY')
         }));
         setResultados(datosFormateados);
-        setTodosLosDatos(datosFormateados); // Actualiza todosLosDatos con los datos filtrados
+        setTodosLosDatos(datosFormateados);
       } else {
         setResultados([]);
-        setTodosLosDatos([]); // En caso de que no haya resultados, reinicia todosLosDatos
+        setTodosLosDatos([]);
       }
     } catch (err) {
       console.error('Error al buscar usuarios:', err);
@@ -38,24 +43,36 @@ export const Abono = () => {
 
   const pagar = (record) => {
     setSelectedClient(record);
+    form.setFieldsValue({
+      interes: Math.round(record.monto * 0.1)
+    });
     setIsModalVisible(true);
   };
 
   const handleOk = async () => {
     try {
-      const { abono } = await form.validateFields();
-      const updatedMonto = selectedClient.monto - abono;
+      const { abono, interes } = await form.validateFields();
+      const abonoCapital = Math.round(abono - interes);
+      const updatedMonto = Math.round(selectedClient.monto - abonoCapital);
       const updatedFechaInicio = moment().format('DD [de] MMMM [de] YYYY');
-      const updatedFechaPago = selectedClient.frecuenciaPago === 'Quincenal'
-        ? moment().add(15, 'days').format('DD [de] MMMM [de] YYYY')
-        : moment().add(1, 'month').format('DD [de] MMMM [de] YYYY');
+
+      let updatedFechaPago;
+      const today = moment();
+
+      if (today.date() <= 15) {
+        updatedFechaPago = today.date(15).format('DD [de] MMMM [de] YYYY');
+      } else {
+        updatedFechaPago = today.add(1, 'month').date(15).format('DD [de] MMMM [de] YYYY');
+      }
 
       await axios.post('http://localhost:8080/actualizarPago', {
         nombre: selectedClient.nombre,
         monto: updatedMonto,
         fechaInicio: updatedFechaInicio,
         fechaPago: updatedFechaPago,
-        abono: abono
+        abono,
+        interes,
+        abonoCapital
       });
 
       setResultados(resultados.map(cliente =>
@@ -84,7 +101,6 @@ export const Abono = () => {
 
   return (
     <MainLayout>
-        
       <Form layout="inline" onFinish={formulario}>
         <Form.Item name="buscar">
           <Input 
@@ -104,7 +120,12 @@ export const Abono = () => {
 
       <Table dataSource={resultados} rowKey="nombre">
         <Column title="Nombre" dataIndex="nombre" key="nombre" />
-        <Column title="Monto" dataIndex="monto" key="monto" />
+        <Column 
+              title="Monto" 
+              dataIndex="monto" 
+              key="monto" 
+              render={(text) => text <= 0 ? 'Préstamo Liquidado' : formatearPesos(text)} 
+            />
         <Column title="Fecha de Inicio" dataIndex="fechaInicio" key="fechaInicio" />
         <Column
           title="Fecha de Pago"
@@ -136,15 +157,20 @@ export const Abono = () => {
         <Form form={form} layout="vertical">
           <Form.Item
             name="abono"
-            label="Abono"
-            rules={[{ required: true, message: 'Por favor ingrese el abono' }]}
+            label="Capital"
+            rules={[{ required: false, message: 'Por favor ingrese el abono' }]}
+          >
+            <Input type="number" />
+          </Form.Item>
+          <Form.Item
+            name="interes"
+            label="Interés"
+            rules={[{ required: true, message: 'Por favor ingrese el interés' }]}
           >
             <Input type="number" />
           </Form.Item>
         </Form>
       </Modal>
-     
     </MainLayout>
-    
   );
 };

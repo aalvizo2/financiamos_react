@@ -4,11 +4,12 @@ const moment = require('moment');
 const connection = require('./db');
 require('moment/locale/es');
 
-
-
-
 Router.get('/datos_prestamo', (req, res) => {
     const nombre = req.query.nombre;
+    if (!nombre) {
+        return res.status(400).json({ error: "El nombre es requerido" });
+    }
+
     connection.query('SELECT * FROM usuarios WHERE nombre=?', [nombre], (err, datos) => {
         if (err) {
             console.error("Error al ejecutar la consulta SQL:", err);
@@ -50,8 +51,8 @@ Router.get('/datos_prestamo', (req, res) => {
             // Ajusta el monto total y el pago mínimo en base al interés acumulado
             const montoRebajado = monto - interesProporcional;
             const pagoMinimoRebajado = interesProporcional;
-            console.log(montoRebajado)
-           
+            console.log(montoRebajado);
+
             return res.json({ 
                 datos: datos, 
                 montoTotal: montoRebajado, 
@@ -62,6 +63,7 @@ Router.get('/datos_prestamo', (req, res) => {
         }
     });
 });
+
 /**
  * Endpoint to fetch client data.
  */
@@ -116,6 +118,7 @@ Router.put('/actualizarEstatus/:cliente', (req, res) => {
             const interesDiario = (monto * interes) / 15;
             const interesProporcional = interesDiario * diasRestantes;
             const montoRebajado = montoActualizado - interesProporcional;
+            const montoRedondeado= Math.round(montoRebajado)
             const pagoMinimoRebajado = interesProporcional;
 
             connection.query('INSERT INTO prestamos (nombre, monto, fechaInicio, frecuenciaPago) VALUES (?,?,?,?)', [cliente, montoRebajado, fechaInicio, frecuenciaPago], (err) => {
@@ -125,6 +128,10 @@ Router.put('/actualizarEstatus/:cliente', (req, res) => {
                 }
 
                 console.log('Datos insertados correctamente en prestamos');
+                connection.query('INSERT INTO caja (total, fecha, nombre, monto) VALUES(?,?,?,?)', [montoRedondeado, fechaInicio, cliente, monto], (error) => {
+                    if(err) throw err
+                    console.log('monto actualizado', montoRebajado)
+                })
                 return res.json({
                     mensaje: 'Datos actualizados correctamente',
                     montoActualizado: montoRebajado,
@@ -164,7 +171,7 @@ Router.get('/listaClientes', (req, res) => {
  */
 Router.post('/filtrarCliente', (req, res) => {
     const { buscar } = req.body;
-    connection.query('SELECT * FROM prestamos WHERE nombre LIKE ?', [`%${buscar}%`], (err, results) => {
+    connection.query('SELECT * FROM prestamos', (err, results) => {
         if (err) {
             console.error('Error al buscar usuarios:', err);
             return res.status(500).json({ error: 'Error al buscar usuarios' });
@@ -187,35 +194,46 @@ Router.post('/filtrarCliente', (req, res) => {
  * Endpoint to update the payment information of a client.
  */
 Router.post('/actualizarPago', (req, res) => {
-    const { nombre, monto, fechaInicio, fechaPago, abono } = req.body;
-
+    const { nombre, monto, fechaInicio, fechaPago, abono, interes, abonoCapital } = req.body;
+    if (!nombre || !monto || !fechaInicio || !fechaPago || !abono || !interes || !abonoCapital) {
+        return res.status(400).json({ error: "Todos los campos son requeridos" });
+    }
+  
     connection.query(
-        'UPDATE prestamos SET monto = ?, fechaInicio = ?, fechaPago = ? WHERE nombre = ?', 
-        [monto, moment(fechaInicio, 'DD [de] MMMM [de] YYYY').format('YYYY-MM-DD'), moment(fechaPago, 'DD [de] MMMM [de] YYYY').format('YYYY-MM-DD'), nombre], 
-        (err, resultados) => {
-            if (err) {
-                console.error('Error al actualizar el pago:', err);
-                return res.status(500).json({ error: 'Error al actualizar el pago' });
-            }
-
-            // Insert movement into the movimientos table
-            connection.query(
-                'INSERT INTO movimientos (nombre, fecha_pago, abono, saldo) VALUES (?, ?, ?, ?)',
-                [nombre, moment().format('YYYY-MM-DD'), abono, monto],
-                (err, resultados) => {
-                    if (err) {
-                        console.error('Error al insertar el movimiento:', err);
-                        return res.status(500).json({ error: 'Error al insertar el movimiento' });
-                    }
-                    return res.json({ message: 'Pago actualizado con éxito' });
-                }
-            );
+      'UPDATE prestamos SET monto = ?, fechaInicio = ?, fechaPago = ? WHERE nombre = ?', 
+      [monto, moment(fechaInicio, 'DD [de] MMMM [de] YYYY').format('YYYY-MM-DD'), moment(fechaPago, 'DD [de] MMMM [de] YYYY').format('YYYY-MM-DD'), nombre], 
+      (err, resultados) => {
+        if (err) {
+          console.error('Error al actualizar el pago:', err);
+          return res.status(500).json({ error: 'Error al actualizar el pago' });
         }
+  
+        // Insert movement into the movimientos table
+        connection.query(
+          'INSERT INTO movimientos (nombre, fecha_pago, abono, interes, abonoCapital, saldo) VALUES (?, ?, ?, ?, ?, ?)',
+          [nombre, moment().format('YYYY-MM-DD'), abono, interes, abonoCapital, monto],
+          (err, resultados) => {
+            if (err) {
+              console.error('Error al insertar el movimiento:', err);
+              return res.status(500).json({ error: 'Error al insertar el movimiento' });
+            }
+  
+            // Select and return the updated record
+            connection.query('SELECT * FROM prestamos WHERE nombre = ?', [nombre], (err, resultados) => {
+              if (err) {
+                console.error('Error al seleccionar el registro actualizado:', err);
+                return res.status(500).json({ error: 'Error al seleccionar el registro actualizado' });
+              }
+  
+              return res.json({ datos: resultados });
+            });
+          }
+        );
+      }
     );
 });
-Router.put('/actualizarMonto/:cliente', (req, res)=>{
-    const cliente= req.params
-    console.log('nombre del cliente', req.body)
-})
+
+
+
 
 module.exports = Router;

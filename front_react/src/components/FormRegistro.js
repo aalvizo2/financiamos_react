@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import { Form, Input, Button, DatePicker } from 'antd';
+import { Form, Input, Button, notification } from 'antd';
 import { Navigate } from 'react-router-dom';
 import MainLayout from './MainLayout';
 import './css/registro_form.css';
+import axios from 'axios';
 
 const FormRegistro = () => {
   const [form] = Form.useForm();
   const [successRedirect, setSuccessRedirect] = useState(false);
-  
+  const [nombreClientes, setNombreClientes] = useState([]);
 
   useEffect(() => {
     const handleBeforeUnload = (e) => {
@@ -20,16 +21,41 @@ const FormRegistro = () => {
     };
   }, [form]);
 
+  useEffect(() => {
+    // Cargar lista de nombres de clientes al montar el componente
+    const fetchClientes = async () => {
+      try {
+        const response = await axios.get('http://localhost:8080/clienteNombre');
+        setNombreClientes(response.data.Data.map(cliente => cliente.nombre));
+      } catch (error) {
+        console.error('Error al obtener los clientes', error);
+      }
+    };
+
+    fetchClientes();
+  }, []);
+
   const Registrar = async (values) => {
     try {
-      localStorage.setItem('datos', JSON.stringify(values));
-      setSuccessRedirect(true);
-      
+      // Verificar si el nombre del cliente ya está registrado
+      if (nombreClientes.includes(values.nombre)) {
+        notification.info({
+          message: 'Advertencia',
+          description: 'El cliente ya se encuentra registrado.',
+        });
+      } else {
+        localStorage.setItem('datos', JSON.stringify(values));
+        setSuccessRedirect(true);
+      }
     } catch (error) {
       console.error('Error al enviar los datos', error);
+      notification.error({
+        message: 'Error',
+        description: 'Ocurrió un error al procesar la solicitud.',
+      });
     }
   };
- 
+
   return (
     <MainLayout>
       <h1>Información Personal:</h1>
@@ -59,8 +85,6 @@ const FormRegistro = () => {
         >
           <Input placeholder="Ingresa un número de Celular" />
         </Form.Item>
-        
-        
         <Form.Item
           name="colonia"
           label="Barrio"
@@ -68,7 +92,6 @@ const FormRegistro = () => {
         >
           <Input placeholder="Barrio" />
         </Form.Item>
-       
         <Form.Item>
           <Button type="primary" htmlType="submit">
             Ingresar

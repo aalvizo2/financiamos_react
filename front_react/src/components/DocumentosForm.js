@@ -5,22 +5,32 @@ import { UploadOutlined } from '@ant-design/icons';
 import MainLayout from './MainLayout';
 
 const FileUploadForm = () => {
-  const [files, setFiles] = useState({ cedula: null, cartaLaboral: null });
-  const [previews, setPreviews] = useState({ cedula: null, cartaLaboral: null });
+  const [files, setFiles] = useState({
+    cedula: null,
+    cartaLaboral: null,
+    formatoReferencias: null,
+    pagare: null,
+    referenciaFamiliar: null,
+    referenciaLaboral: null,
+  });
+  
+  const [previews, setPreviews] = useState({
+    cedula: null,
+    cartaLaboral: null,
+    formatoReferencias: null,
+    pagare: null,
+    referenciaFamiliar: null,
+    referenciaLaboral: null,
+  });
 
   const handleFileChange = (type) => (info) => {
     const file = info.file.originFileObj;
-    
 
     if (file) {
       const reader = new FileReader();
       reader.onload = (e) => {
-        
         setFiles((prevFiles) => ({ ...prevFiles, [type]: file }));
-
-        // Guardar el nombre del archivo en localStorage
         localStorage.setItem(type, file.name);
-
         setPreviews((prevPreviews) => ({ ...prevPreviews, [type]: e.target.result }));
       };
       reader.readAsDataURL(file);
@@ -31,15 +41,28 @@ const FileUploadForm = () => {
   };
 
   const handleSubmit = async () => {
-    if (!files.cedula || !files.cartaLaboral) {
-      console.error('Por favor suba ambos documentos.');
-      message.error('Por favor suba ambos documentos.');
+    const {
+      cedula,
+      cartaLaboral,
+      formatoReferencias,
+      pagare,
+      referenciaFamiliar,
+      referenciaLaboral,
+    } = files;
+
+    if (!cedula || !cartaLaboral || !formatoReferencias || !pagare || !referenciaFamiliar || !referenciaLaboral) {
+      console.error('Por favor suba todos los documentos.');
+      message.error('Por favor suba todos los documentos.');
       return;
     }
 
     const formData = new FormData();
-    formData.append('cedula', files.cedula);
-    formData.append('cartaLaboral', files.cartaLaboral);
+    formData.append('cedula', cedula);
+    formData.append('cartaLaboral', cartaLaboral);
+    formData.append('formatoReferencias', formatoReferencias);
+    formData.append('pagare', pagare);
+    formData.append('referenciaFamiliar', referenciaFamiliar);
+    formData.append('referenciaLaboral', referenciaLaboral);
 
     try {
       await axios.post('http://localhost:8080/upload', formData, {
@@ -48,7 +71,6 @@ const FileUploadForm = () => {
         },
       });
 
-      
       message.success('Documentos subidos exitosamente');
       window.location.href = '/vista_previa';
     } catch (error) {
@@ -63,46 +85,28 @@ const FileUploadForm = () => {
       <Form layout="vertical" onFinish={handleSubmit}>
         <Card title="Subir Documentos" bordered={false} style={{ maxWidth: '800px', margin: '0 auto' }}>
           <Row gutter={16}>
-            <Col xs={24} md={12}>
-              <Form.Item label="Cédula">
-                <Upload
-                  onChange={handleFileChange('cedula')}
-                  accept="*/*"
-                  maxCount={1}
-                  showUploadList={false}
-                >
-                  <Button icon={<UploadOutlined />}>Subir Cédula</Button>
-                </Upload>
-                {previews.cedula && (
-                  <Image
-                    width={200}
-                    src={previews.cedula}
-                    alt="Preview Cédula"
-                    style={{ marginTop: '10px' }}
-                  />
-                )}
-              </Form.Item>
-            </Col>
-            <Col xs={24} md={12}>
-              <Form.Item label="Carta Laboral">
-                <Upload
-                  onChange={handleFileChange('cartaLaboral')}
-                  accept="*/*"
-                  maxCount={1}
-                  showUploadList={false}
-                >
-                  <Button icon={<UploadOutlined />}>Subir Carta Laboral</Button>
-                </Upload>
-                {previews.cartaLaboral && (
-                  <Image
-                    width={200}
-                    src={previews.cartaLaboral}
-                    alt="Preview Carta Laboral"
-                    style={{ marginTop: '10px' }}
-                  />
-                )}
-              </Form.Item>
-            </Col>
+            {Object.keys(previews).map((key) => (
+              <Col xs={24} md={12} key={key}>
+                <Form.Item label={key.replace(/([A-Z])/g, ' $1').toUpperCase()}>
+                  <Upload
+                    onChange={handleFileChange(key)}
+                    accept="*/*"
+                    maxCount={1}
+                    showUploadList={false}
+                  >
+                    <Button icon={<UploadOutlined />}>Subir {key.replace(/([A-Z])/g, ' $1').toUpperCase()}</Button>
+                  </Upload>
+                  {previews[key] && (
+                    <Image
+                      width={200}
+                      src={previews[key]}
+                      alt={`Preview ${key}`}
+                      style={{ marginTop: '10px' }}
+                    />
+                  )}
+                </Form.Item>
+              </Col>
+            ))}
           </Row>
           <Form.Item style={{ textAlign: 'center' }}>
             <Button type="primary" htmlType="submit">
@@ -116,4 +120,3 @@ const FileUploadForm = () => {
 };
 
 export default FileUploadForm;
-

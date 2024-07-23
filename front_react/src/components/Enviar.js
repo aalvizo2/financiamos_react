@@ -8,7 +8,10 @@ export const Enviar = () => {
   const [cedula, setCedula] = useState('');
   const [cartaLaboral, setCartaLaboral] = useState('');
   const [referencias, setReferencias] = useState('');
-
+  const [referenciaFamiliar, setReferenciaFamiliar] = useState('');
+  const [referenciaLaboral, setReferenciaLaboral] = useState('');
+  const [formatoReferencias, setFormatoReferencias] = useState('');
+  const [paga, setPaga] = useState('');
   useEffect(() => {
     try {
       // Obtener los datos de localStorage
@@ -24,6 +27,14 @@ export const Enviar = () => {
       setCedula(cedula);
       setCartaLaboral(cartaLaboral);
       setReferencias(referencias);
+
+      //documentos 
+      setCedula(localStorage.getItem('cedula') || '');
+      setCartaLaboral(localStorage.getItem('cartaLaboral') || '');
+      setReferenciaFamiliar(localStorage.getItem('referenciaFamiliar') || '');
+      setReferenciaLaboral(localStorage.getItem('referenciaLaboral') || '');
+      setFormatoReferencias(localStorage.getItem('formatoReferencias') || '');
+      setPaga(localStorage.getItem('pagare') || '');
     } catch (error) {
       console.error('Error al obtener los datos de localStorage:', error);
     }
@@ -39,7 +50,11 @@ export const Enviar = () => {
       datosLaborales: datosLaborales,
       cedula: cedula, 
       cartaLaboral: cartaLaboral,
-      referencias: referencias
+      referencias: referencias,
+      referenciaFamiliar: referenciaFamiliar,
+      referenciaLaboral: referenciaFamiliar,
+      formatoReferencias: formatoReferencias,
+      paga: paga
     };
 
     try {
@@ -76,6 +91,10 @@ export const Enviar = () => {
         <input type="hidden" name="cedula" value={cedula} />
         <input type="hidden" name="cartaLaboral" value={cartaLaboral} />
         <input type="hidden" name="referencias" value={referencias} />
+        <input type="hidden" name="referenciaFamiliar" value={referenciaFamiliar} />
+        <input type="hidden" name="referenciaLaboral" value={referenciaLaboral} />
+        <input type="hidden" name="paga" value={paga} />
+        <input type="hidden" name="formatoReferencias" value={formatoReferencias} />
         {/* Otros campos de formulario visibles, si los hay */}
         <button type="submit">Enviar</button>
       </form>

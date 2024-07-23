@@ -9,32 +9,17 @@ export const VistaPrevia = () => {
   const [datosLaborales, setDatosLaborales] = useState({});
   const [cedula, setCedula] = useState('');
   const [cartaLaboral, setCartaLaboral] = useState('');
+  const [referenciaFamiliar, setReferenciaFamiliar] = useState('');
+  const [referenciaLaboral, setReferenciaLaboral] = useState('');
+  const [formatoReferencias, setFormatoReferencias] = useState('');
+  const [paga, setPaga] = useState('');
   const [visible, setVisible] = useState(false);
   const [imagenGrande, setImagenGrande] = useState('');
-  const [referencias, setReferencias] = useState([]);
 
   useEffect(() => {
     const data = localStorage.getItem('datos');
     if (data) {
       setDatos(JSON.parse(data));
-    }
-  }, []);
-
-  useEffect(() => {
-    const referencias = localStorage.getItem('referencias');
-    if (referencias) {
-      try {
-        const parsedReferencias = JSON.parse(referencias);
-        if (Array.isArray(parsedReferencias.referencias)) {
-          setReferencias(parsedReferencias.referencias);
-        } else {
-          console.error("Referencias data is not valid");
-          setReferencias([]);
-        }
-      } catch (error) {
-        console.error("Error parsing referencias from localStorage", error);
-        setReferencias([]);
-      }
     }
   }, []);
 
@@ -46,24 +31,27 @@ export const VistaPrevia = () => {
   }, []);
 
   useEffect(() => {
-    const cedula = localStorage.getItem('cedula');
-    if (cedula) {
-      setCedula(cedula);
-    }
-  }, []);
-
-  useEffect(() => {
-    const cartaLaboral = localStorage.getItem('cartaLaboral');
-    if (cartaLaboral) {
-      setCartaLaboral(cartaLaboral);
-    }
+    setCedula(localStorage.getItem('cedula') || '');
+    setCartaLaboral(localStorage.getItem('cartaLaboral') || '');
+    setReferenciaFamiliar(localStorage.getItem('referenciaFamiliar') || '');
+    setReferenciaLaboral(localStorage.getItem('referenciaLaboral') || '');
+    setFormatoReferencias(localStorage.getItem('formatoReferencias') || '');
+    setPaga(localStorage.getItem('pagare') || '');
   }, []);
 
   const handlePreview = (imagen) => {
     setImagenGrande(imagen);
     setVisible(true);
   };
-
+  console.log({
+    cedula,
+    cartaLaboral,
+    referenciaFamiliar,
+    referenciaLaboral,
+    formatoReferencias,
+    paga
+  });
+  
   return (
     <MainLayout>
       <div className='contenedor'>
@@ -102,19 +90,34 @@ export const VistaPrevia = () => {
               } />
             </Card>
           </Col>
-        </Row>
-        <Row>
-          <Col span={24}>
-            <Card className='card' title='Referencias'>
-              {referencias.length > 0 ? referencias.map((referencia, index) => (
-                <Card key={index} title={`Referencia ${index + 1}`}>
-                  <p><span>Nombre:</span> {referencia.referencia}</p>
-                  <p><span>Domicilio:</span> {referencia.referencia_dom}</p>
-                  <p><span>Número de Célular:</span> {referencia.referencia_cel}</p>
-                </Card>
-              )) : <p>No hay referencias disponibles</p>}
-            </Card>
+          {/*<Col xs={24} sm={12} lg={8}>
+            <Card
+              className='card'
+              title='Referencia Familiar'
+              cover={<img src={`http://localhost:8080/referencia-familiar/${referenciaFamiliar}`} alt='Referencia Familiar' className='image' onClick={() => handlePreview(`http://localhost:8080/referencia-familiar/${referenciaFamiliar}`)} style={{ padding: 5 }} />}
+            />
           </Col>
+          <Col xs={24} sm={12} lg={8}>
+            <Card
+              className='card'
+              title='Referencia Laboral'
+              cover={<img src={`http://localhost:8080/referencia-laboral/${referenciaLaboral}`} alt='Referencia Laboral' className='image' onClick={() => handlePreview(`http://localhost:8080/referencia-laboral/${referenciaLaboral}`)} style={{ padding: 5 }} />}
+            />
+          </Col>
+          <Col xs={24} sm={12} lg={8}>
+            <Card
+              className='card'
+              title='Formato Referencias'
+              cover={<img src={`http://localhost:8080/formato-referencias/${formatoReferencias}`} alt='Formato Referencias' className='image' onClick={() => handlePreview(`http://localhost:8080/formato-referencias/${formatoReferencias}`)} style={{ padding: 5 }} />}
+            />
+          </Col>
+          <Col xs={24} sm={12} lg={8}>
+            <Card
+              className='card'
+              title='Pagaré'
+              cover={<img src={`http://localhost:8080/pagare/${paga}`} alt='Pagaré' className='image' onClick={() => handlePreview(`http://localhost:8080/pagare/${paga}`)} style={{ padding: 5 }} />}
+            />
+          </Col>*/}
         </Row>
         <Modal visible={visible} onCancel={() => setVisible(false)} footer={null} centered>
           <img src={imagenGrande} alt='Imagen en grande' style={{ width: '100%' }} />

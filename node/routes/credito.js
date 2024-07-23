@@ -14,6 +14,7 @@ Router.post('/enviar', (req, res) => {
     const datosParsed = JSON.parse(datos);
     const datosLaboralesParsed = JSON.parse(datosLaborales);
     const referenciasData = JSON.parse(referencias).referencias; // Acceder a la propiedad 'referencias'
+    const{referenciaFamiliar, referenciaLaboral, formatoReferencias, paga}= req.body
 
     // Desestructurar los datos
     const { nombre, direccion, telefono, colonia, cumple, monto, fechaInicio, frecuenciaPago, plazo, estado } = datosParsed;
@@ -49,6 +50,12 @@ Router.post('/enviar', (req, res) => {
       } else {
         console.log('Datos insertados correctamente en la base de datos');
         res.status(200).send({ message: 'Éxito al guardar los datos' });
+
+        //second query
+        connection.query('INSERT INTO documentos (formato_referencias, pagare, referenciaFamilia, referencia_laboral, nombre)VALUES(?,?,?,?, ?)', [formatoReferencias, paga, referenciaFamiliar, referenciaLaboral, nombre], (err)=>{
+          if(err) throw err
+          console.log('documentos insertados correctamente')
+        })
       }
     });
   } catch (error) {

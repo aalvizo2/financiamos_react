@@ -110,7 +110,8 @@ export const Movimientos = () => {
                   render={(text) => moment(text).format('DD [de] MMMM [de] YYYY')}
                 />
                 <Column title="Abono" dataIndex="abono" key="abono" />
-                {/* Otros detalles del movimiento */}
+                <Column title='Abono Interes' dataIndex='interes' key='interes' />
+                
               </Table>
             </div>
           )}
