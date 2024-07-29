@@ -19,36 +19,41 @@ import Cliente from './pages/Solicitudes/Cliente'; // Import default, no destruc
 import { Movimientos } from './pages/Movimientos/Movimientos';
 import { CorteCaja } from './pages/CorteCaja/CorteCaja';
 import Profile from './pages/Profile/Profile';
-import {Referencias } from './components/Referencias';
+import { Referencias } from './components/Referencias';
 import Cobranza from './pages/Cobranza/Cobranza';
 import { Gasto } from './pages/Gastos/Gasto';
+import { AuthProvider } from './context/AuthContext';
+import ProtectedRoute from './components/ProtectedRoute';
+
 function App() {
     return (
-        <BrowserRouter>
-            <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/inicio" element={<Inicio />} />
-                <Route path="/registro" element={<Registro />} />
-                <Route path="/pendientes" element={<Pendientes />} />
-                <Route path="/credito" element={<Credito />} />
-                <Route path="/indicador" element={<Indicador />} />
-                <Route path="/clientes" element={<Clientes />} />
-                <Route path="/datos_laborales" element={<DatosLaborales />} />
-                <Route path="/documentos" element={<Documentos />} />
-                <Route path="/vista_previa" element={<VistaPreviaDoc />} />
-                <Route path="/solicitud" element={<SolicitudPrestamo />} />
-                <Route path="/vista_previacredito" element={<VistaPreviaPrestamoFront />} />
-                <Route path="/solicitudes" element={<Solicitudes />} />
-                <Route path="/pagar" element={<Pagos />} />
-                <Route path="/cliente/:cliente" element={<Cliente />} /> 
-                <Route path='/movimientos' element={<Movimientos />}/>
-                <Route path='/corteCaja' element={<CorteCaja/>}/>
-                <Route path='/profile' element={<Profile />} />
-                <Route path='/referencias' element={<Referencias />} />
-                <Route path='/cobranza' element={<Cobranza />} />
-                <Route path='/gastos' element={<Gasto />} />
-            </Routes>
-        </BrowserRouter>
+        <AuthProvider>
+            <BrowserRouter>
+                <Routes>
+                    <Route path="/" element={<Home />} />
+                    <Route path="/inicio" element={<Inicio />} />
+                    <Route path="/registro" element={<Registro />} />
+                    <Route path="/pendientes" element={<ProtectedRoute element={<Pendientes />} />} />
+                    <Route path="/credito" element={<ProtectedRoute element={<Credito />} />} />
+                    <Route path="/indicador" element={<ProtectedRoute element={<Indicador />} />} />
+                    <Route path="/clientes" element={<ProtectedRoute element={<Clientes />} />} />
+                    <Route path="/datos_laborales" element={<ProtectedRoute element={<DatosLaborales />} />} />
+                    <Route path="/documentos" element={<ProtectedRoute element={<Documentos />} />} />
+                    <Route path="/vista_previa" element={<ProtectedRoute element={<VistaPreviaDoc />} />} />
+                    <Route path="/solicitud" element={<ProtectedRoute element={<SolicitudPrestamo />} />} />
+                    <Route path="/vista_previacredito" element={<ProtectedRoute element={<VistaPreviaPrestamoFront />} />} />
+                    <Route path="/solicitudes" element={<ProtectedRoute element={<Solicitudes />} />} />
+                    <Route path="/pagar" element={<ProtectedRoute element={<Pagos />} />} />
+                    <Route path="/cliente/:cliente" element={<ProtectedRoute element={<Cliente />} />} />
+                    <Route path='/movimientos' element={<ProtectedRoute element={<Movimientos />} />} />
+                    <Route path='/corteCaja' element={<ProtectedRoute element={<CorteCaja />} />} />
+                    <Route path='/profile' element={<ProtectedRoute element={<Profile />} />} />
+                    <Route path='/referencias' element={<ProtectedRoute element={<Referencias />} />} />
+                    <Route path='/cobranza' element={<ProtectedRoute element={<Cobranza />} />} />
+                    <Route path='/gastos' element={<ProtectedRoute element={<Gasto />} />} />
+                </Routes>
+            </BrowserRouter>
+        </AuthProvider>
     );
 }
 

@@ -5,6 +5,7 @@ import axios from 'axios';
 import { Navigate } from 'react-router-dom';
 import { Form, Input, Button, Alert, Layout } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
+import { useAuth } from '../context/AuthContext';
 
 const { Content } = Layout;
 
@@ -19,10 +20,9 @@ const MainBar = () => {
 };
 
 const LoginForm = () => {
-  const [usuario, setUsuario] = useState('');
-  const [pass, setPass] = useState('');
   const [error, setError] = useState('');
   const [successRedirect, setSuccessRedirect] = useState(false);
+  const { login } = useAuth(); // Hook para acceder a los métodos del contexto de autenticación
 
   const handleSubmit = async (values) => {
     try {
@@ -30,12 +30,11 @@ const LoginForm = () => {
         usuario: values.usuario,
         pass: values.pass,
       });
-      
 
-      // Guardar el usuario en localStorage
-      localStorage.setItem('usuario', values.usuario);
-
+      // Realizar el login en el contexto con el nombre de usuario
+      login(values.usuario);
       setSuccessRedirect(true);
+      localStorage.setItem('usuario', values.usuario);
       setError('');
     } catch (error) {
       console.error('Error al enviar el formulario', error);
@@ -63,7 +62,6 @@ const LoginForm = () => {
           <Input
             prefix={<UserOutlined />}
             placeholder="Usuario"
-            onChange={(e) => setUsuario(e.target.value)}
           />
         </Form.Item>
         <Form.Item
@@ -73,7 +71,6 @@ const LoginForm = () => {
           <Input.Password
             prefix={<LockOutlined />}
             placeholder="Contraseña"
-            onChange={(e) => setPass(e.target.value)}
           />
         </Form.Item>
         <Form.Item>
@@ -101,3 +98,4 @@ export const Home = () => {
 };
 
 export default Home;
+

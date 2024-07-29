@@ -1,7 +1,6 @@
 const express= require('express')
 const Router= express.Router()
 const connection= require('../routes/db');
-const { error } = require('console');
 
 Router.get('/check-user/:user', (req, res) => {
     const usuario = req.params.user;
@@ -160,7 +159,7 @@ Router.put('/updateCliente', (req, res) => {
       const nombreBusqueda = `%${nombre}%`
       connection.query('UPDATE documentos SET nombre=? WHERE nombre LIKE ? ', [nombre, nombreBusqueda], (err)=>{
          if(err) throw err 
-         console.log('Documentos actualizada')
+         
       })
     }
   );

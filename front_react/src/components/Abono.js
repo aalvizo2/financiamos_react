@@ -12,6 +12,18 @@ const formatearPesos = (valor) => {
   return new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP' }).format(valor);
 };
 
+const obtenerFechaPagoMasCercana = () => {
+  const hoy = moment();
+  const dia = hoy.date();
+  if (dia <= 15) {
+    return hoy.date(15).format('DD [de] MMMM [de] YYYY');
+  } else if (dia <= 30) {
+    return hoy.date(30).format('DD [de] MMMM [de] YYYY');
+  } else {
+    return hoy.add(1, 'month').date(15).format('DD [de] MMMM [de] YYYY');
+  }
+};
+
 export const Abono = () => {
   const [buscar, setBuscar] = useState('');
   const [resultados, setResultados] = useState([]);
@@ -30,7 +42,9 @@ export const Abono = () => {
             ...cliente,
             monto: Math.round(cliente.monto),
             fechaInicio: moment(cliente.fechaInicio, 'YYYY-MM-DD').format('DD [de] MMMM [de] YYYY'),
-            fechaPago: moment(cliente.fechaPago, 'YYYY-MM-DD').format('DD [de] MMMM [de] YYYY')
+            fechaPago: cliente.fechaPago
+              ? moment(cliente.fechaPago, 'YYYY-MM-DD').format('DD [de] MMMM [de] YYYY')
+              : obtenerFechaPagoMasCercana()
           }));
           setTodosLosDatos(datosFormateados);
           setResultados(datosFormateados);

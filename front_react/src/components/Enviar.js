@@ -12,6 +12,7 @@ export const Enviar = () => {
   const [referenciaLaboral, setReferenciaLaboral] = useState('');
   const [formatoReferencias, setFormatoReferencias] = useState('');
   const [paga, setPaga] = useState('');
+  const [servicios, setServicios] = useState('')
   useEffect(() => {
     try {
       // Obtener los datos de localStorage
@@ -35,6 +36,7 @@ export const Enviar = () => {
       setReferenciaLaboral(localStorage.getItem('referenciaLaboral') || '');
       setFormatoReferencias(localStorage.getItem('formatoReferencias') || '');
       setPaga(localStorage.getItem('pagare') || '');
+      setServicios(localStorage.getItem('servicios') || '');
     } catch (error) {
       console.error('Error al obtener los datos de localStorage:', error);
     }
@@ -54,7 +56,8 @@ export const Enviar = () => {
       referenciaFamiliar: referenciaFamiliar,
       referenciaLaboral: referenciaFamiliar,
       formatoReferencias: formatoReferencias,
-      paga: paga
+      paga: paga, 
+      servicios: servicios,
     };
 
     try {
@@ -74,6 +77,7 @@ export const Enviar = () => {
         localStorage.removeItem('cedula');
         localStorage.removeItem('cartaLaboral');
         localStorage.removeItem('referencias');
+        localStorage.removeItem('servicios');
       } else {
         console.error('Error al enviar el formulario:', response.statusText);
       }

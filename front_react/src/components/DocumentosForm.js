@@ -12,6 +12,7 @@ const FileUploadForm = () => {
     pagare: null,
     referenciaFamiliar: null,
     referenciaLaboral: null,
+    servicios: null
   });
   
   const [previews, setPreviews] = useState({
@@ -21,6 +22,7 @@ const FileUploadForm = () => {
     pagare: null,
     referenciaFamiliar: null,
     referenciaLaboral: null,
+    servicios: null
   });
 
   const handleFileChange = (type) => (info) => {
@@ -48,6 +50,7 @@ const FileUploadForm = () => {
       pagare,
       referenciaFamiliar,
       referenciaLaboral,
+      servicios
     } = files;
 
     if (!cedula || !cartaLaboral || !formatoReferencias || !pagare || !referenciaFamiliar || !referenciaLaboral) {
@@ -63,7 +66,7 @@ const FileUploadForm = () => {
     formData.append('pagare', pagare);
     formData.append('referenciaFamiliar', referenciaFamiliar);
     formData.append('referenciaLaboral', referenciaLaboral);
-
+    formData.append('servicios', servicios);
     try {
       await axios.post('http://localhost:8080/upload', formData, {
         headers: {
@@ -95,13 +98,13 @@ const FileUploadForm = () => {
                     showUploadList={false}
                   >
                     <Button icon={<UploadOutlined />}>Subir {key.replace(/([A-Z])/g, ' $1').toUpperCase()}</Button>
-                  </Upload>
+                  </Upload><br />
                   {previews[key] && (
                     <Image
-                      width={200}
+                      width={100}
                       src={previews[key]}
                       alt={`Preview ${key}`}
-                      style={{ marginTop: '10px' }}
+                      style={{ marginTop: '20px' }}
                     />
                   )}
                 </Form.Item>

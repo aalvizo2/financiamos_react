@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import MainLayout from './MainLayout';
-import { Table, Tag, Button, Modal, Form, Input, Row, Col, Image, message } from 'antd';
+import { Table, Tag, Button, Modal, Form, Input, Row, Col, Image, message, Flex, Upload } from 'antd';
+import {UploadOutlined} from '@ant-design/icons';
+
 
 const { TextArea } = Input;
 
@@ -14,6 +16,9 @@ export const ClientesLista = () => {
   const [filteredDatos, setFilteredDatos] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [form] = Form.useForm();
+  const [isAprovado, setIsAprobado] = useState(false);
+  //const [imageUrl, setImageUrl] = useState(null);
+  const [imageUrls, setImageUrls] = useState({});
 
   // Fetch data from the API
   const fetchData = async () => {
@@ -41,6 +46,12 @@ export const ClientesLista = () => {
         form.setFieldsValue(response.data); // Set form values
         setModalVisible(true);
         getDocumentos(clientName);
+        const cliente= response.data;
+        if(cliente.estado === 'Aprobado'){
+           setIsAprobado(true)
+        }else{
+           setIsAprobado(false)
+        }
       }
     } catch (error) {
       console.error("Error fetching client data: ", error);
@@ -128,8 +139,42 @@ export const ClientesLista = () => {
     }
   ];
   
-  // Render references
-  const renderReferencias = (referencias, domicilios, celulares) => {
+
+    // Handle file upload
+    const beforeUpload = (file) => {
+      const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
+      if (!isJpgOrPng) {
+        message.error('Solo puedes subir archivos JPG/PNG!');
+      }
+      const isLt2M = file.size / 1024 / 1024 < 2;
+      if (!isLt2M) {
+        message.error('La imagen debe ser menor a 2MB!');
+      }
+      return isJpgOrPng && isLt2M;
+    };
+  
+    const handleUploadChange = async ({ file, fileList }) => {
+      if (file.status === 'done') {
+        const updatedImageUrls = { ...imageUrls, [file.name]: URL.createObjectURL(file.originFileObj) };
+        setImageUrls(updatedImageUrls);
+      }
+    };
+  
+    const handleSubmit = async () => {
+      try {
+        // Lógica para guardar el estado actual del cliente
+        // Aquí puedes usar form.getFieldsValue() para obtener los valores actuales del formulario
+        const values = form.getFieldsValue();
+        await axios.post(`http://localhost:8080/saveCliente/${clienteActual.nombre}`, values);
+        message.success('Datos guardados con éxito');
+      } catch (error) {
+        console.error("Error saving data: ", error);
+        message.error('Error al guardar los datos');
+      }
+    };
+  
+
+    const renderReferencias = (referencias, domicilios, celulares) => {
     if (!referencias || !domicilios || !celulares) return null;
     const referenciasList = JSON.parse(referencias);
     const domiciliosList = JSON.parse(domicilios);
@@ -242,6 +287,49 @@ export const ClientesLista = () => {
                 <Form.Item name="estado" label="Estado" style={{ marginBottom: '8px' }}>
                   <Input disabled />
                 </Form.Item>
+
+                {documentos.map((documento) => {
+  const isAprobado = clienteActual && clienteActual.estado === 'Aprobado';
+  return (
+    <div key={documento.id}>
+      {documento.desembolso != null ? (
+        <div></div>
+      ) : (
+        isAprobado ? (
+          <Upload
+            beforeUpload={beforeUpload}
+            onChange={handleUploadChange}
+            customRequest={async ({ file, onSuccess }) => {
+              const formData = new FormData();
+              formData.append('file', file);
+              try {
+                const response = await axios.post(`http://localhost:8080/subirDesembolso/${clienteActual.nombre}`, formData, {
+                  headers: {
+                    'Content-Type': 'multipart/form-data'
+                  }
+                });
+                if (response.status === 200) {
+                  onSuccess();
+                  message.success('Operación realizada con éxito');
+                  handleCloseModal();
+                }
+              } catch (error) {
+                console.error("Error uploading file: ", error);
+                message.error(`Error al subir ${file.name}`);
+              }
+            }}
+            showUploadList={false}
+          >
+            <Button icon={<UploadOutlined />}>Seleccionar archivo</Button>
+          </Upload>
+        ) : (
+          <div>No permitido subir desembolso, cliente no aprobado.</div>
+        )
+      )}
+    </div>
+  );
+})}
+          
               </Col>
               <Col span={24}>
                 <h3>Referencias</h3>
@@ -306,6 +394,33 @@ export const ClientesLista = () => {
                       alt="Carta Laboral"
                    />
                   
+                  ))}
+
+                  {documentos.map((documento) => (
+                     <Image 
+                        key={documento.servicios}
+                        src={`http://localhost:8080/referencia-laboral/${documento.referencia_laboral}`}
+                        width={100}
+                        alt='Servicios'
+                      />
+                  ))}
+
+                  {documentos.map((documento) => (
+                     <div>
+
+                       {documento.desembolso != null ? (
+                         <Image
+                         key={documento.desembolso}
+                         width={100}
+                         src={`http://localhost:8080/desembolso/${documento.desembolso}`}
+                         alt='Desembolso'
+                        />
+                       ): (
+                         <div></div>
+                       )}
+
+                     </div>
+                    
                   ))}
                 </div>
 

@@ -11,6 +11,14 @@ const FormRegistro = () => {
   const [nombreClientes, setNombreClientes] = useState([]);
 
   useEffect(() => {
+    // Recuperar datos del formulario
+    const storedData = localStorage.getItem('datos');
+    if (storedData) {
+      form.setFieldsValue(JSON.parse(storedData));
+    }
+  }, [form]);
+
+  useEffect(() => {
     const handleBeforeUnload = (e) => {
       const datos = form.getFieldsValue();
       localStorage.setItem('datos', JSON.stringify(datos));

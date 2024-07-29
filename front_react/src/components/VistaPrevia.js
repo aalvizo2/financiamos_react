@@ -12,6 +12,7 @@ export const VistaPrevia = () => {
   const [referenciaFamiliar, setReferenciaFamiliar] = useState('');
   const [referenciaLaboral, setReferenciaLaboral] = useState('');
   const [formatoReferencias, setFormatoReferencias] = useState('');
+  const [servicios, setServicios]= useState('');
   const [paga, setPaga] = useState('');
   const [visible, setVisible] = useState(false);
   const [imagenGrande, setImagenGrande] = useState('');
@@ -37,6 +38,7 @@ export const VistaPrevia = () => {
     setReferenciaLaboral(localStorage.getItem('referenciaLaboral') || '');
     setFormatoReferencias(localStorage.getItem('formatoReferencias') || '');
     setPaga(localStorage.getItem('pagare') || '');
+    setServicios(localStorage.getItem('servicios') || '');
   }, []);
 
   const handlePreview = (imagen) => {
@@ -44,7 +46,8 @@ export const VistaPrevia = () => {
     setVisible(true);
   };
  
-  
+
+
   return (
     <MainLayout>
       <div className='contenedor'>

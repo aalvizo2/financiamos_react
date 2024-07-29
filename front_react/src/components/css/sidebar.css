@@ -1,10 +1,12 @@
 .sidebar {
   height: 100vh;
   background-color: #EB8114;
+  position: fixed;
 }
 
 .ant-menu {
   background-color: #EB8114;
+  
 }
 
 .ant-menu-item {
