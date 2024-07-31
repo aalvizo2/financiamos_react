@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import MainLayout from './MainLayout';
-import { Table, Tag, Button, Modal, Form, Input, Row, Col, Image, message, Flex, Upload } from 'antd';
+import { Table, Tag, Button, Modal, Form, Input, Row, Col, Image, message,  Upload } from 'antd';
 import {UploadOutlined} from '@ant-design/icons';
 
 
@@ -16,7 +16,7 @@ export const ClientesLista = () => {
   const [filteredDatos, setFilteredDatos] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [form] = Form.useForm();
-  const [isAprovado, setIsAprobado] = useState(false);
+  
   //const [imageUrl, setImageUrl] = useState(null);
   const [imageUrls, setImageUrls] = useState({});
 
@@ -46,12 +46,7 @@ export const ClientesLista = () => {
         form.setFieldsValue(response.data); // Set form values
         setModalVisible(true);
         getDocumentos(clientName);
-        const cliente= response.data;
-        if(cliente.estado === 'Aprobado'){
-           setIsAprobado(true)
-        }else{
-           setIsAprobado(false)
-        }
+       
       }
     } catch (error) {
       console.error("Error fetching client data: ", error);
@@ -160,7 +155,7 @@ export const ClientesLista = () => {
       }
     };
   
-    const handleSubmit = async () => {
+    /*const handleSubmit = async () => {
       try {
         // Lógica para guardar el estado actual del cliente
         // Aquí puedes usar form.getFieldsValue() para obtener los valores actuales del formulario
@@ -171,7 +166,7 @@ export const ClientesLista = () => {
         console.error("Error saving data: ", error);
         message.error('Error al guardar los datos');
       }
-    };
+    };*/
   
 
     const renderReferencias = (referencias, domicilios, celulares) => {
@@ -289,44 +284,44 @@ export const ClientesLista = () => {
                 </Form.Item>
 
                 {documentos.map((documento) => {
-  const isAprobado = clienteActual && clienteActual.estado === 'Aprobado';
-  return (
-    <div key={documento.id}>
-      {documento.desembolso != null ? (
-        <div></div>
-      ) : (
-        isAprobado ? (
-          <Upload
-            beforeUpload={beforeUpload}
-            onChange={handleUploadChange}
-            customRequest={async ({ file, onSuccess }) => {
-              const formData = new FormData();
-              formData.append('file', file);
-              try {
-                const response = await axios.post(`http://localhost:8080/subirDesembolso/${clienteActual.nombre}`, formData, {
-                  headers: {
-                    'Content-Type': 'multipart/form-data'
-                  }
-                });
-                if (response.status === 200) {
-                  onSuccess();
-                  message.success('Operación realizada con éxito');
-                  handleCloseModal();
-                }
-              } catch (error) {
-                console.error("Error uploading file: ", error);
-                message.error(`Error al subir ${file.name}`);
-              }
-            }}
-            showUploadList={false}
-          >
-            <Button icon={<UploadOutlined />}>Seleccionar archivo</Button>
-          </Upload>
-        ) : (
-          <div>No permitido subir desembolso, cliente no aprobado.</div>
-        )
-      )}
-    </div>
+                  const isAprobado = clienteActual && clienteActual.estado === 'Aprobado';
+                     return (
+                      <div key={documento.id}>
+                        {documento.desembolso != null ? (
+                           <div></div>
+                        ) : (
+                          isAprobado ? (
+                       <Upload
+                           beforeUpload={beforeUpload}
+                           onChange={handleUploadChange}
+                           customRequest={async ({ file, onSuccess }) => {
+                           const formData = new FormData();
+                           formData.append('file', file);
+                             try {
+                                const response = await axios.post(`http://localhost:8080/subirDesembolso/${clienteActual.nombre}`, formData, {
+                                   headers: {
+                                      'Content-Type': 'multipart/form-data'
+                                   }
+                           });
+                           if (response.status === 200) {
+                              onSuccess();
+                              message.success('Operación realizada con éxito');
+                              handleCloseModal();
+                           }
+                            } catch (error) {
+                                console.error("Error uploading file: ", error);
+                                message.error(`Error al subir ${file.name}`);
+                            }
+                         }}
+                         showUploadList={false}
+                       >
+                       <Button icon={<UploadOutlined />}>Seleccionar archivo</Button>
+                      </Upload>
+                            ) : (
+                              <div>No permitido subir desembolso, cliente no aprobado.</div>
+                      )
+                     )}
+               </div>
   );
 })}
           

@@ -86,7 +86,7 @@ export const ModalAcciones = ({ visible, onCancel, datoFila, onSubmit }) => {
                 label='Abono'
                 rules={[{
                    required: true, 
-                   message: 'Favor de Ingresar un abono',
+                   
                    pattern: /^(?!-)\d*$/,
                    message: 'Favor de no Ingresar signos negativos'
                 }]}
@@ -98,7 +98,7 @@ export const ModalAcciones = ({ visible, onCancel, datoFila, onSubmit }) => {
                 label='Interes'
                 rules={[{
                    required: true, 
-                   message: 'Favor de Ingresar un abono',
+                   
                    pattern: /^(?!-)\d*$/,
                    message: 'Favor de no Ingresar signos negativos'
                 }]}

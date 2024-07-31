@@ -19,9 +19,8 @@ const { Sider } = Layout;
 
 const SideBar = ({ collapsed, onCollapse }) => {
   const location = useLocation();
-  const [isMobile, setIsMobile] = useState(false);
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
   const [permisos, setPermisos] = useState([]);
-  const [role, setRole] = useState('');
 
   useEffect(() => {
     const handleResize = () => {
@@ -29,9 +28,7 @@ const SideBar = ({ collapsed, onCollapse }) => {
     };
 
     window.addEventListener('resize', handleResize);
-    handleResize(); // Call initially to set the initial state
 
-    // Cleanup listener on component unmount
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
@@ -48,10 +45,8 @@ const SideBar = ({ collapsed, onCollapse }) => {
         if (user) {
           const response = await axios.get(`http://localhost:8080/get-roles/${user}`);
           const roleData = response.data.datos[0];
-          const { role, permisos } = roleData;
-          setRole(role);
-          setPermisos(JSON.parse(permisos) || []); // Convertir permisos a array
-           
+          const { permisos } = roleData;
+          setPermisos(JSON.parse(permisos) || []);
         }
       } catch (error) {
         console.error('Failed to fetch roles:', error);
@@ -69,8 +64,8 @@ const SideBar = ({ collapsed, onCollapse }) => {
     { key: '/solicitudes', icon: <DollarCircleOutlined />, label: 'Solicitudes' },
     { key: '/movimientos', icon: <HistoryOutlined />, label: 'Movimientos' },
     { key: '/corteCaja', icon: <SnippetsOutlined />, label: 'Corte de Caja' },
-    {key: '/cobranza', icon: <FaMoneyCheckAlt />, label: 'Cobranza'}, 
-    {key:'/gastos', icon: <FaMoneyCheckAlt />, label: 'Gastos'}
+    { key: '/cobranza', icon: <FaMoneyCheckAlt />, label: 'Cobranza' },
+    { key: '/gastos', icon: <FaMoneyCheckAlt />, label: 'Gastos' }
   ];
 
   return (

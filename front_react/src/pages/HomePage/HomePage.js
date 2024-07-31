@@ -8,7 +8,6 @@ const { Title } = Typography;
 
 const HomePage = () => {
   const [permisos, setPermisos] = useState([]);
-  const [role, setRole] = useState('');
 
   useEffect(() => {
     const getRoles = async () => {
@@ -17,8 +16,7 @@ const HomePage = () => {
         if (user) {
           const response = await axios.get(`http://localhost:8080/get-roles/${user}`);
           const roleData = response.data.datos[0];
-          const { role, permisos } = roleData;
-          setRole(role);
+          const { permisos } = roleData;
           setPermisos(JSON.parse(permisos) || []);
         }
       } catch (error) {
@@ -37,8 +35,8 @@ const HomePage = () => {
     { key: '/solicitudes', icon: '💲', label: 'Solicitudes' },
     { key: '/movimientos', icon: '🔄', label: 'Movimientos' },
     { key: '/corteCaja', icon: '🧾', label: 'Corte de Caja' },
-    {key: '/gastos', icon: '💲', label: 'Gastos'},
-    {key: '/cobranza', icon: '💲', label: 'Cobranza'}
+    { key: '/gastos', icon: '💲', label: 'Gastos' },
+    { key: '/cobranza', icon: '💲', label: 'Cobranza' }
   ];
 
   return (

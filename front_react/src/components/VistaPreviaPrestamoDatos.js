@@ -12,14 +12,14 @@ export const VistaPreviaPrestamoDatos = () => {
   const [plazo, setPlazo] = useState([]);
   const [abono, setAbono] = useState('');
   const [solicitudesPendientes, setSolicitudesPendientes] = useState([]);
-  const [usuarioRegistrado, setUsuarioRegistrado] = useState(false);
+  
   const [pagoMinimo, setPagoMinimo] = useState('');
 
   useEffect(() => {
     const cliente = localStorage.getItem('nombre_persona');
     if (cliente) {
       setUsuario(cliente);
-      setUsuarioRegistrado(true);
+      
     }
   }, []);
 
