@@ -70,7 +70,7 @@ export const CorteCajaComp = () => {
         ...gasto,
         nombre: gasto.nombre,
         gasto: parseFloat(-gasto.monto),
-        fecha_pago: gasto.fecha// Formatea la fecha en español
+        fecha_pago: gasto.fecha // Formatea la fecha en español
       }));
 
       setMovimientos(movimientosDatos);
@@ -130,10 +130,10 @@ export const CorteCajaComp = () => {
           <Table dataSource={filterMovimientosByDate()} rowKey="id" pagination={false} bordered>
             <Column title="Nombre" dataIndex="nombre" key="nombre" />
             <Column 
-                 title="Abono" 
-                 dataIndex="abono" 
-                 key="abono"
-                 render={abono => formatCurrency(abono)}
+              title="Abono" 
+              dataIndex="abono" 
+              key="abono"
+              render={abono => formatCurrency(abono)}
             />
             <Column 
               title="Fecha de Pago" 
@@ -141,28 +141,28 @@ export const CorteCajaComp = () => {
               key="fecha_pago" 
             />
             <Column 
-                  title="Saldo" 
-                  dataIndex="saldo" 
-                  key="saldo" 
-                  render={saldo => formatCurrency(saldo)}
+              title="Saldo" 
+              dataIndex="saldo" 
+              key="saldo" 
+              render={saldo => formatCurrency(saldo)}
             />
             <Column 
-                  title="Interes" 
-                  dataIndex="interes" 
-                  key="interes" 
-                  render={interes => formatCurrency(interes)}
+              title="Interes" 
+              dataIndex="interes" 
+              key="interes" 
+              render={interes => formatCurrency(interes)}
             />
             <Column 
-                title="Gasto" 
-                dataIndex="gasto" 
-                key="gasto"
-                render={gasto => formatCurrency(gasto)}
+              title="Gasto" 
+              dataIndex="gasto" 
+              key="gasto"
+              render={gasto => formatCurrency(gasto)}
             />
             <Column 
-                 title="Préstamo" 
-                 dataIndex="total" 
-                 key="total" 
-                 render={total => formatCurrency(total)}
+              title="Préstamo" 
+              dataIndex="total" 
+              key="total" 
+              render={total => formatCurrency(total)}
             />
           </Table>
           <Title level={4} style={{ marginTop: '20px', textAlign: 'right' }}>
