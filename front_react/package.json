@@ -1,7 +1,7 @@
 {
   "name": "front_react",
   "version": "0.1.0",
-  "homepage": "https://aalvizo2.github.io/financiamos_react/build",
+  "homepage": "https://aalvizo2.github.io/financiamos_react",
   "private": true,
   "dependencies": {
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
