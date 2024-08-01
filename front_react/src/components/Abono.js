@@ -121,7 +121,7 @@ export const Abono = () => {
 
   const isFechaPagoAtrasada = (fechaPago, fechaInicio) => {
     const fechaPagoMoment = moment(fechaPago, 'DD [de] MMMM [de] YYYY');
-    const fechaInicioMoment = moment(fechaInicio, 'DD [de] MMMM [de] YYYY');
+    //const fechaInicioMoment = moment(fechaInicio, 'DD [de] MMMM [de] YYYY');
     return moment().diff(fechaPagoMoment, 'days') > 7 && moment().isAfter(fechaPagoMoment);
   };
 

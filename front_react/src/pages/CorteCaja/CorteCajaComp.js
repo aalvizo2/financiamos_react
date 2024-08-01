@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import axios from 'axios';
 import { Table, Input, Button, Typography, Row, Col } from 'antd';
 import moment from 'moment';
@@ -30,9 +30,9 @@ export const CorteCajaComp = () => {
   const [totalCaja, setTotalCaja] = useState(50000000);
   const [totalPrestamos, setTotalPrestamos] = useState(0);
   const [totalGastos, setTotalGastos] = useState(0);
-  const [initialCaja, setInitialCaja] = useState(50000000);
+  const initialCaja = 50000000;
 
-  const calculateTotals = (movimientos = [], prestamos = [], gastos = []) => {
+  const calculateTotals = useCallback((movimientos = [], prestamos = [], gastos = []) => {
     const totalAbonos = movimientos.reduce((acc, curr) => acc + parseFloat(curr.abono) + parseFloat(curr.interes || 0), 0);
     const totalGastos = gastos.reduce((acc, curr) => acc + parseFloat(curr.monto || 0), 0);
     const totalPrestamos = prestamos.reduce((acc, curr) => acc + parseFloat(curr.total), 0);
@@ -44,9 +44,9 @@ export const CorteCajaComp = () => {
     setTotalCaja(newTotalCaja);
     setTotalGastos(totalGastos);
     setTotalPrestamos(totalPrestamos);
-  };
+  }, [initialCaja]);
 
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     try {
       const [movimientosResponse, prestamosResponse, gastosResponse] = await Promise.all([
         axios.get('http://localhost:8080/movimientos'),
@@ -80,15 +80,15 @@ export const CorteCajaComp = () => {
     } catch (error) {
       console.error('Error al obtener datos:', error);
     }
-  };
+  }, [calculateTotals]);
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [fetchData]);
 
   useEffect(() => {
     calculateTotals(movimientos, prestamos, gastos);
-  }, [movimientos, prestamos, gastos]);
+  }, [movimientos, prestamos, gastos, calculateTotals]);
 
   const filterMovimientosByDate = () => {
     if (!fechaFiltro) return [...movimientos, ...prestamos, ...gastos];

@@ -11,8 +11,6 @@ const { Option } = Select;
 export const Solicitud = () => {
   const [nombre, setNombre] = useState('');
   const [monto, setMonto] = useState(0);
-  const [frecuenciaPago, setFrecuenciaPago] = useState('');
-  const [plazo, setPlazo] = useState('');
   const [fechaInicio, setFechaInicio] = useState(formatDate(new Date())); // Initialize with today's date
   const [form] = Form.useForm();
 
@@ -28,8 +26,7 @@ export const Solicitud = () => {
   }, []);
 
   const actualizar = async (values) => {
-    
-    const montoConInteres = monto  // Calcular monto más el interés del 10%
+    const montoConInteres = monto; // Calcular monto más el interés del 10%
 
     try {
       Swal.fire({
@@ -92,15 +89,13 @@ export const Solicitud = () => {
             />
           </Form.Item>
           <Form.Item name="frecuenciaPago" label="Frecuencia de Pago" rules={[{ required: true, message: 'Por favor seleccione la frecuencia de pago' }]}>
-            <Select placeholder="Selecciona Frecuencia de Pago" onChange={(value) => setFrecuenciaPago(value)}>
+            <Select placeholder="Selecciona Frecuencia de Pago">
               <Option value="Quincenal">Quincenal</Option>
-              
             </Select>
           </Form.Item>
           <Form.Item name="plazo" label="Plazo" rules={[{ required: true, message: 'Por favor seleccione el plazo' }]}>
-            <Select placeholder="Selecciona Plazo" onChange={(value) => setPlazo(value)}>
+            <Select placeholder="Selecciona Plazo">
               <Option value="6 meses">6 Meses</Option>
-              
             </Select>
           </Form.Item>
           <Form.Item>
