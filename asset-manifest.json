@@ -1,0 +1,16 @@
+{
+  "files": {
+    "main.css": "/%7Bfinanciamos_react%7D/static/css/main.39b082fe.css",
+    "main.js": "/%7Bfinanciamos_react%7D/static/js/main.3305d6bb.js",
+    "static/js/453.bf3f30e0.chunk.js": "/%7Bfinanciamos_react%7D/static/js/453.bf3f30e0.chunk.js",
+    "static/media/financiera.png": "/%7Bfinanciamos_react%7D/static/media/financiera.4c77bcc79b68a567203c.png",
+    "index.html": "/%7Bfinanciamos_react%7D/index.html",
+    "main.39b082fe.css.map": "/%7Bfinanciamos_react%7D/static/css/main.39b082fe.css.map",
+    "main.3305d6bb.js.map": "/%7Bfinanciamos_react%7D/static/js/main.3305d6bb.js.map",
+    "453.bf3f30e0.chunk.js.map": "/%7Bfinanciamos_react%7D/static/js/453.bf3f30e0.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.39b082fe.css",
+    "static/js/main.3305d6bb.js"
+  ]
+}
