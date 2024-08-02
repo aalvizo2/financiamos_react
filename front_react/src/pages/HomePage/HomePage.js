@@ -3,6 +3,7 @@ import { Card, Row, Col, Typography } from 'antd';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import './HomePage.css';
+import { RUTA } from '../../route';
 
 const { Title } = Typography;
 
@@ -14,7 +15,7 @@ const HomePage = () => {
       try {
         const user = localStorage.getItem('usuario');
         if (user) {
-          const response = await axios.get(`http://localhost:8080/get-roles/${user}`);
+          const response = await axios.get(`${RUTA}/get-roles/${user}`);
           const roleData = response.data.datos[0];
           const { permisos } = roleData;
           setPermisos(JSON.parse(permisos) || []);

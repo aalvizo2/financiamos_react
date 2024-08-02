@@ -4,6 +4,7 @@ import axios from 'axios';
 import moment from 'moment';
 import 'moment/locale/es';
 import locale from 'antd/es/date-picker/locale/es_ES';
+import {RUTA} from '../../route';
 
 moment.locale('es');
 
@@ -19,7 +20,7 @@ export const GastoComponent = () => {
 
   const fetchGastos = async () => {
     try {
-      const response = await axios.get('http://localhost:8080/mostrarGasto');
+      const response = await axios.get(`${RUTA}/mostrarGasto`);
       setGastos(response.data.Data);
     } catch (error) {
       message.error('Error al cargar los gastos');
@@ -32,7 +33,7 @@ export const GastoComponent = () => {
         ...values,
         fecha: moment(values.fecha).format('LL'),
       };
-      const response = await axios.post('http://localhost:8080/generarGasto', formattedValues);
+      const response = await axios.post(`${RUTA}/generarGasto`, formattedValues);
       message.success(response.data.message);
       form.resetFields();
       fetchGastos();

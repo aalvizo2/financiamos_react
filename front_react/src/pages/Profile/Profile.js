@@ -2,18 +2,21 @@ import React, { useEffect, useState } from 'react';
 import MainLayout from '../../components/MainLayout';
 import axios from 'axios';
 import { Form, Input, Button, message, Select } from 'antd';
+import { useNavigate } from 'react-router-dom';
+import { RUTA } from '../../route';
 
 const { Option } = Select;
 
 const Profile = () => {
   const [roleUser, setRoleUser] = useState('');
+  const navigate= useNavigate();
 
   useEffect(() => {
     const getUsuario = async () => {
       const user = localStorage.getItem('usuario');
       if (user) {
         try {
-          const response = await axios.get(`http://localhost:8080/check-user/${user}`);
+          const response = await axios.get(`${RUTA}/check-user/${user}`);
           setRoleUser(response.data.role);
         } catch (error) {
           message.error('Error al obtener el usuario');
@@ -26,10 +29,10 @@ const Profile = () => {
 
   const handleSubmit = async (values) => {
     try {
-      const response = await axios.post('http://localhost:8080/create-user', values);
+      const response = await axios.post(`${RUTA}/create-user`, values);
       if (response.status === 200) {
         message.success(response.data.message);
-        window.location.href = '/inicio';
+        navigate('/inicio');
       } else {
         message.info(response.data.message);
       }
@@ -41,9 +44,9 @@ const Profile = () => {
   const changePassword = async (value) => {
     try {
       const user = localStorage.getItem('usuario');
-      await axios.put(`http://localhost:8080/update/${user}`, value);
+      await axios.put(`${RUTA}/update/${user}`, value);
       message.success('Contraseña cambiada correctamente');
-      window.location.href = '/inicio';
+      navigate('/inicio');
     } catch (error) {
       message.error('Error al cambiar la contraseña');
     }

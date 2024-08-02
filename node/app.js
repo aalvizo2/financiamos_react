@@ -20,7 +20,7 @@ app.use(bodyParser.json());
 app.use('/cedula', express.static(path.join(__dirname, 'cedula')))
 // Configuración de CORS
 const corsOptions = {
-  origin: 'http://localhost:3000',
+  origin: ['https://aalvizo2.github.io', 'http://localhost:3000'],
   optionsSuccessStatus: 200,
   credentials: true
 };

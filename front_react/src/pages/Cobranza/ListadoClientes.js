@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Table, Button, message } from 'antd'; 
 import axios from 'axios';
 import { ModalAcciones } from "./CobranzaModal";
+import {RUTA} from '../../route';
 
 export const ListadoClientes = () => {
   const [clientes, setClientes] = useState([]); 
@@ -12,7 +13,7 @@ export const ListadoClientes = () => {
   const getClientes = async () => {
     setLoading(true);
     try {
-      const response = await axios.get('http://localhost:8080/cobranza');
+      const response = await axios.get(`${RUTA}/cobranza`);
       setClientes(response.data.datos);
     } catch (error) {
       console.error('Error fetching clients:', error);
@@ -54,7 +55,7 @@ export const ListadoClientes = () => {
 
   const handleSubmit = async (updatedRecord) => {
     try {
-      await axios.post('http://localhost:8080/actualizarNota', updatedRecord); 
+      await axios.post(`${RUTA}/actualizarNota`, updatedRecord); 
       
       message.success('Datos actualizados con éxito');
       getClientes();
@@ -68,7 +69,7 @@ export const ListadoClientes = () => {
   return (
     <>
       <h1>Listado de Clientes</h1>
-      <Table dataSource={clientes} columns={columns} rowKey="nombre" loading={loading}/>
+      <Table dataSource={clientes} columns={columns} rowKey="nombre" loading={loading} pagination={true} className="table-responsive"/>
       <ModalAcciones
         visible={modal}
         onCancel={CerrarModal}

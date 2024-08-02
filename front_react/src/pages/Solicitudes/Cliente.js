@@ -4,6 +4,8 @@ import MainLayout from '../../components/MainLayout';
 import axios from 'axios';
 import { Button, Select, Form, Input, Row, Col } from 'antd';
 import Swal from 'sweetalert2';
+import { useNavigate } from 'react-router-dom';
+import { RUTA } from '../../route';
 
 const { Option } = Select;
 
@@ -11,10 +13,11 @@ const Cliente = () => {
   const { cliente } = useParams();
   const [datos, setDatos] = useState(null);
   const [estatus, setEstatus] = useState('');
+  const navigate= useNavigate();
 
   useEffect(() => {
     console.log("Cliente ID:", cliente);
-    axios.get(`http://localhost:8080/datosCliente/${cliente}`)
+    axios.get(`${RUTA}/datosCliente/${cliente}`)
       .then(response => {
         if (response.status === 200) {
           console.log("Datos del cliente:", response.data);
@@ -42,7 +45,7 @@ const Cliente = () => {
       frecuenciaPago: datos[0]?.frecuenciaPago
     };
 
-    axios.put(`http://localhost:8080/actualizarEstatus/${cliente}`, datosActualizados)
+    axios.put(`${RUTA}/actualizarEstatus/${cliente}`, datosActualizados)
       .then(response => {
         console.log("Estado actualizado:", response.data);
         Swal.fire({
@@ -54,14 +57,14 @@ const Cliente = () => {
           const solicitudesPendientes = JSON.parse(localStorage.getItem('solicitudesPendientes')) || [];
           const nuevasSolicitudes = solicitudesPendientes.filter(solicitud => solicitud.cliente !== cliente);
           localStorage.setItem('solicitudesPendientes', JSON.stringify(nuevasSolicitudes));
-          window.location.href = '/inicio';
+          navigate('/inicio')
         });
 
         if (datosActualizados.estatus === 'Rechazado') {
           const solicitudesPendientes = JSON.parse(localStorage.getItem('solicitudesPendientes')) || [];
           const nuevasSolicitudes = solicitudesPendientes.filter(solicitud => solicitud.cliente !== cliente);
           localStorage.setItem('solicitudesPendientes', JSON.stringify(nuevasSolicitudes));
-          window.location.href = '/clientes';
+          navigate('/clientes');
         }
       })
       .catch(error => {
@@ -81,8 +84,8 @@ const Cliente = () => {
             <Form key={dato.nombre} layout="vertical" style={{ width: '100%', marginBottom: '20px' }}>
               <Row gutter={16}>
                 <Col span={4}>
-                  <img src={`http://localhost:8080/cedula/${dato.cedula}`} alt='Identificación' style={{ width: '100px', height: '100px', marginBottom: '20px' }} />
-                  <img src={`http://localhost:8080/carta-laboral/${dato.carta_laboral}`} alt='Carta Laboral' style={{ width: '100px', height: '100px', marginBottom: '20px' }} />
+                  <img src={`${RUTA}/cedula/${dato.cedula}`} alt='Identificación' style={{ width: '100px', height: '100px', marginBottom: '20px' }} />
+                  <img src={`${RUTA}/carta-laboral/${dato.carta_laboral}`} alt='Carta Laboral' style={{ width: '100px', height: '100px', marginBottom: '20px' }} />
                 </Col>
                 <Col span={10}>
                   <Form.Item label="Nombre">
@@ -94,8 +97,8 @@ const Cliente = () => {
                   <Form.Item label="Teléfono">
                     <Input value={dato.telefono} disabled />
                   </Form.Item>
-                  <Form.Item label="Cumpleaños">
-                    <Input value={dato.cumple} disabled />
+                  <Form.Item label="Sueldo Inicial">
+                    <Input value={dato.sueldo_in} disabled />
                   </Form.Item>
                 </Col>
                 <Col span={10}>
@@ -108,9 +111,7 @@ const Cliente = () => {
                   <Form.Item label="Antigüedad">
                     <Input value={dato.antiguedad} disabled />
                   </Form.Item>
-                  <Form.Item label="Sueldo Inicial">
-                    <Input value={dato.sueldo_in} disabled />
-                  </Form.Item>
+                  
                 </Col>
               </Row>
               <Row gutter={16}>

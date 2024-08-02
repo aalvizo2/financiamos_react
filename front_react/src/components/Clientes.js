@@ -3,6 +3,7 @@ import axios from 'axios';
 import MainLayout from './MainLayout';
 import { Table, Tag, Button, Modal, Form, Input, Row, Col, Image, message,  Upload } from 'antd';
 import {UploadOutlined} from '@ant-design/icons';
+import { RUTA } from '../route';
 
 
 const { TextArea } = Input;
@@ -23,7 +24,7 @@ export const ClientesLista = () => {
   // Fetch data from the API
   const fetchData = async () => {
     try {
-      const response = await axios.get('http://localhost:8080/listaClientes');
+      const response = await axios.get(`${RUTA}/listaClientes`);
       if (response.status === 200) {
         setDatos(response.data.datos);
       }
@@ -40,7 +41,7 @@ export const ClientesLista = () => {
   // Open the modal and fetch client data
   const handleOpenModal = async (clientName) => {
     try {
-      const response = await axios.get(`http://localhost:8080/cliente/nombre/${clientName}`);
+      const response = await axios.get(`${RUTA}/cliente/nombre/${clientName}`);
       if (response.status === 200) {
         setClienteActual(response.data);
         form.setFieldsValue(response.data); // Set form values
@@ -55,7 +56,7 @@ export const ClientesLista = () => {
 
   const getDocumentos = async (clientName) => {
     try {
-      const response = await axios.get(`http://localhost:8080/getImages/${clientName}`);
+      const response = await axios.get(`${RUTA}/getImages/${clientName}`);
       setDocumentos(response.data.Data);
     } catch (error) {
       console.error("Error fetching documents: ", error);
@@ -80,7 +81,7 @@ export const ClientesLista = () => {
       .then(values => {
         values.id = clienteActual.id; // Ensure `id` is available in clienteActual
 
-        axios.put('http://localhost:8080/updateCliente', values)
+        axios.put(`${RUTA}/updateCliente`, values)
           .then(response => {
             if (response.status === 200) {
               message.success('Cliente actualizado correctamente');
@@ -160,7 +161,7 @@ export const ClientesLista = () => {
         // Lógica para guardar el estado actual del cliente
         // Aquí puedes usar form.getFieldsValue() para obtener los valores actuales del formulario
         const values = form.getFieldsValue();
-        await axios.post(`http://localhost:8080/saveCliente/${clienteActual.nombre}`, values);
+        await axios.post(`${RUTA}/saveCliente/${clienteActual.nombre}`, values);
         message.success('Datos guardados con éxito');
       } catch (error) {
         console.error("Error saving data: ", error);
@@ -298,7 +299,7 @@ export const ClientesLista = () => {
                            const formData = new FormData();
                            formData.append('file', file);
                              try {
-                                const response = await axios.post(`http://localhost:8080/subirDesembolso/${clienteActual.nombre}`, formData, {
+                                const response = await axios.post(`${RUTA}/subirDesembolso/${clienteActual.nombre}`, formData, {
                                    headers: {
                                       'Content-Type': 'multipart/form-data'
                                    }
@@ -340,14 +341,14 @@ export const ClientesLista = () => {
                   {clienteActual.cedula && (
                     <Image
                       width={100}
-                      src={`http://localhost:8080/cedula/${clienteActual.cedula}`}
+                      src={`${RUTA}/cedula/${clienteActual.cedula}`}
                       alt="Cédula"
                     />
                   )}
                   {clienteActual.carta_laboral && (
                     <Image
                       width={100}
-                      src={`http://localhost:8080/carta-laboral/${clienteActual.carta_laboral}`}
+                      src={`${RUTA}/carta-laboral/${clienteActual.carta_laboral}`}
                       alt="Carta Laboral"
                     />
                   )}
@@ -355,7 +356,7 @@ export const ClientesLista = () => {
                     <Image
                        key={documento.pagare}
                        width={100}
-                       src={`http://localhost:8080/pagare/${documento.pagare}`}
+                       src={`${RUTA}/pagare/${documento.pagare}`}
                       alt="Carta Laboral"
                    />
                   
@@ -365,7 +366,7 @@ export const ClientesLista = () => {
                     <Image
                        key={documento.formato_referencias}
                        width={100}
-                       src={`http://localhost:8080/formato-referencias/${documento.formato_referencias}`}
+                       src={`${RUTA}/formato-referencias/${documento.formato_referencias}`}
                       alt="Carta Laboral"
                    />
                   
@@ -375,7 +376,7 @@ export const ClientesLista = () => {
                     <Image
                        key={documento.referenciaFamilia}
                        width={100}
-                       src={`http://localhost:8080/referencia-familiar/${documento.referenciaFamilia}`}
+                       src={`${RUTA}/referencia-familiar/${documento.referenciaFamilia}`}
                       alt="Carta Laboral"
                    />
                   
@@ -385,7 +386,7 @@ export const ClientesLista = () => {
                     <Image
                        key={documento.referencia_laboral}
                        width={100}
-                       src={`http://localhost:8080/referencia-laboral/${documento.referencia_laboral}`}
+                       src={`${RUTA}/referencia-laboral/${documento.referencia_laboral}`}
                       alt="Carta Laboral"
                    />
                   
@@ -394,7 +395,7 @@ export const ClientesLista = () => {
                   {documentos.map((documento) => (
                      <Image 
                         key={documento.servicios}
-                        src={`http://localhost:8080/referencia-laboral/${documento.referencia_laboral}`}
+                        src={`${RUTA}/referencia-laboral/${documento.referencia_laboral}`}
                         width={100}
                         alt='Servicios'
                       />
@@ -407,7 +408,7 @@ export const ClientesLista = () => {
                          <Image
                          key={documento.desembolso}
                          width={100}
-                         src={`http://localhost:8080/desembolso/${documento.desembolso}`}
+                         src={`${RUTA}/desembolso/${documento.desembolso}`}
                          alt='Desembolso'
                         />
                        ): (

@@ -5,6 +5,7 @@ import moment from 'moment';
 import MainLayout from './MainLayout';
 import 'moment/locale/es';
 import { SearchOutlined } from '@ant-design/icons';
+import { RUTA } from '../route';
 
 const { Column } = Table;
 
@@ -36,7 +37,7 @@ export const Abono = () => {
     // Cargar datos al principio
     const fetchData = async () => {
       try {
-        const response = await axios.post('http://localhost:8080/filtrarCliente');
+        const response = await axios.post(`${RUTA}/filtrarCliente`);
         if (response.data && Array.isArray(response.data.resultados)) {
           const datosFormateados = response.data.resultados.map(cliente => ({
             ...cliente,
@@ -91,7 +92,7 @@ export const Abono = () => {
         updatedFechaPago = today.add(1, 'month').date(15).format('DD [de] MMMM [de] YYYY');
       }
 
-      await axios.post('http://localhost:8080/actualizarPago', {
+      await axios.post(`${RUTA}/actualizarPago`, {
         nombre: selectedClient.nombre,
         monto: updatedMonto,
         fechaInicio: updatedFechaInicio,
@@ -139,7 +140,7 @@ export const Abono = () => {
         </Form.Item>
       </Form>
 
-      <Table dataSource={resultados} rowKey="nombre">
+      <Table dataSource={resultados} rowKey="nombre" pagination={true} className='table-responsive'>
         <Column title="Nombre" dataIndex="nombre" key="nombre" />
         <Column 
           title="Monto" 

@@ -4,6 +4,7 @@ import Swal from 'sweetalert2';
 import { Typography, Layout, Form, Input, Button } from 'antd';
 import MainLayout from './MainLayout';
 import './css/vista_previacredito.css';
+import { RUTA } from '../route';
 
 const { Title } = Typography;
 
@@ -26,7 +27,7 @@ export const VistaPreviaPrestamoDatos = () => {
   const jalarDatosCredito = async () => {
     try {
       const cliente = localStorage.getItem('nombre_persona');
-      const response = await axios.get(`http://localhost:8080/datos_prestamo?nombre=${encodeURIComponent(cliente)}`);
+      const response = await axios.get(`${RUTA}/datos_prestamo?nombre=${encodeURIComponent(cliente)}`);
       const datos = response.data.datos;
       const montoTotal = Math.ceil(response.data.montoTotal);
       const pagoMinimo = Math.ceil(response.data.pagoMinimo);

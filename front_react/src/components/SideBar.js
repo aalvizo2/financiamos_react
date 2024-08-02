@@ -14,6 +14,7 @@ import { Link, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import './css/sidebar.css';
 import { FaMoneyCheckAlt } from "react-icons/fa";
+import { RUTA } from '../route';
 
 const { Sider } = Layout;
 
@@ -43,7 +44,7 @@ const SideBar = ({ collapsed, onCollapse }) => {
       try {
         const user = localStorage.getItem('usuario');
         if (user) {
-          const response = await axios.get(`http://localhost:8080/get-roles/${user}`);
+          const response = await axios.get(`${RUTA}/get-roles/${user}`);
           const roleData = response.data.datos[0];
           const { permisos } = roleData;
           setPermisos(JSON.parse(permisos) || []);

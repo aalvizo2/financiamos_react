@@ -4,6 +4,7 @@ import { Table, Button, Modal, message, Descriptions } from 'antd';
 import moment from 'moment';
 import 'moment/locale/es';
 import MainLayout from '../../components/MainLayout';
+import { RUTA } from '../../route';
 
 const { Column } = Table;
 
@@ -19,7 +20,7 @@ export const Movimientos = () => {
 
   const obtenerClientes = async () => {
     try {
-      const response = await axios.get('http://localhost:8080/lista-clientes');
+      const response = await axios.get(`${RUTA}/lista-clientes`);
       console.log('Respuesta de /lista-clientes:', response.data);  // Log response
       if (response.data && Array.isArray(response.data.datos)) {
         const clientesConFechasFormateadas = response.data.datos.map(cliente => ({
@@ -37,13 +38,13 @@ export const Movimientos = () => {
 
   const mostrarEstadoCuenta = async (cliente) => {
     try {
-      const response = await axios.get(`http://localhost:8080/estado-cuenta/${cliente}`);
+      const response = await axios.get(`${RUTA}/estado-cuenta/${cliente}`);
       
       if (response.data && response.data.estadoCuenta) {
         setEstadoCuenta(response.data.estadoCuenta);
         setIsModalVisible(true);
         // Realiza la llamada al endpoint `montoPrestamo`
-        const prestamoResponse = await axios.get(`http://localhost:8080/montoPrestamo/${cliente}`);
+        const prestamoResponse = await axios.get(`${RUTA}/montoPrestamo/${cliente}`);
         console.log('Respuesta de /montoPrestamo:', prestamoResponse.data);  // Log response
         if (prestamoResponse.data && prestamoResponse.data.Data) {
           setMontoTotal(prestamoResponse.data.Data);

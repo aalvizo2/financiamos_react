@@ -25,10 +25,13 @@ import { Gasto } from './pages/Gastos/Gasto';
 import { AuthProvider } from './context/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
 
+
+const basename = '/financiamos_react';
+
 function App() {
     return (
         <AuthProvider>
-            <BrowserRouter>
+            <BrowserRouter basename={basename}>
                 <Routes>
                     <Route path="/" element={<Home />} />
                     <Route path="/inicio" element={<Inicio />} />

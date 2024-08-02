@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import './css/enviar.css';
 import { message } from 'antd';
+import { useNavigate } from 'react-router-dom';
+import { RUTA } from '../route';
 
 export const Enviar = () => {
   const [datos, setDatos] = useState('');
@@ -12,7 +14,8 @@ export const Enviar = () => {
   const [referenciaLaboral, setReferenciaLaboral] = useState('');
   const [formatoReferencias, setFormatoReferencias] = useState('');
   const [paga, setPaga] = useState('');
-  const [servicios, setServicios] = useState('')
+  const [servicios, setServicios] = useState('');
+  const navigate= useNavigate();
   useEffect(() => {
     try {
       // Obtener los datos de localStorage
@@ -61,7 +64,7 @@ export const Enviar = () => {
     };
 
     try {
-      const response = await fetch('http://localhost:8080/enviar', {
+      const response = await fetch(`${RUTA}/enviar`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -71,7 +74,7 @@ export const Enviar = () => {
 
       if (response.ok) {
         message.success('Solicitud realizada correctamente');
-        window.location.href = '/pendientes';
+        navigate('/pendientes');
         localStorage.removeItem('datos');
         localStorage.removeItem('datosLaborales');
         localStorage.removeItem('cedula');

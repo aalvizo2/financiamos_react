@@ -5,6 +5,7 @@ import moment from 'moment';
 import 'moment/locale/es'; // Importa el locale en español
 import ReactToPrint from 'react-to-print';
 import MainLayout from '../../components/MainLayout';
+import {RUTA} from '../../route';
 
 const { Title } = Typography;
 const { Column } = Table;
@@ -49,9 +50,9 @@ export const CorteCajaComp = () => {
   const fetchData = useCallback(async () => {
     try {
       const [movimientosResponse, prestamosResponse, gastosResponse] = await Promise.all([
-        axios.get('http://localhost:8080/movimientos'),
-        axios.get('http://localhost:8080/montoPrestamos'),
-        axios.get('http://localhost:8080/mostrarGasto')
+        axios.get(`${RUTA}/movimientos`),
+        axios.get(`${RUTA}/montoPrestamos`),
+        axios.get(`${RUTA}/mostrarGasto`)
       ]);
 
       const movimientosDatos = movimientosResponse.data.datos.map(dato => ({
@@ -127,7 +128,7 @@ export const CorteCajaComp = () => {
           </Col>
         </Row>
         <div ref={componentRef}>
-          <Table dataSource={filterMovimientosByDate()} rowKey="id" pagination={false} bordered>
+          <Table dataSource={filterMovimientosByDate()} rowKey="id" pagination={true} className='table-responsive'>
             <Column title="Nombre" dataIndex="nombre" key="nombre" />
             <Column 
               title="Abono" 

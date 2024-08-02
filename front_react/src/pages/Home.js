@@ -6,6 +6,7 @@ import { Navigate } from 'react-router-dom';
 import { Form, Input, Button, Alert, Layout } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import { useAuth } from '../context/AuthContext';
+import {RUTA} from '../route';
 
 const { Content } = Layout;
 
@@ -26,7 +27,7 @@ const LoginForm = () => {
 
   const handleSubmit = async (values) => {
     try {
-      await axios.post('http://localhost:8080/auth', {
+      await axios.post(`${RUTA}/auth`, {
         usuario: values.usuario,
         pass: values.pass,
       });

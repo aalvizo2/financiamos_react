@@ -4,6 +4,8 @@ import Swal from 'sweetalert2';
 import { Form, InputNumber, Button, Select, Layout, Typography, Input, message } from 'antd';
 import MainLayout from './MainLayout';
 import './css/registro_form.css';
+import { useNavigate } from 'react-router-dom';
+import {RUTA} from '../route';
 
 const { Title } = Typography;
 const { Option } = Select;
@@ -13,6 +15,7 @@ export const Solicitud = () => {
   const [monto, setMonto] = useState(0);
   const [fechaInicio, setFechaInicio] = useState(formatDate(new Date())); // Initialize with today's date
   const [form] = Form.useForm();
+  const navigate= useNavigate();
 
   // Function to format the date as "dd de MMMM de yyyy" (e.g., "20 de abril de 2024")
   function formatDate(date) {
@@ -35,7 +38,7 @@ export const Solicitud = () => {
       });
 
       // Enviar los datos a la base de datos con el monto calculado con interés
-      await axios.put('http://localhost:8080/solicitud', {
+      await axios.put(`${RUTA}/solicitud`, {
         nombre,
         monto: montoConInteres,
         frecuenciaPago: values.frecuenciaPago,
@@ -43,7 +46,7 @@ export const Solicitud = () => {
         plazo: values.plazo
       });
 
-      window.location.href = '/vista_previacredito';
+      navigate('/vista_previacredito')
     } catch (error) {
       message.success({message: 'Operación realizada con éxito'});
     }

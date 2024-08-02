@@ -3,9 +3,12 @@ import { Card, Button } from 'antd';
 import { Link} from 'react-router-dom';
 import axios from 'axios';
 import MainLayout from '../../components/MainLayout';
+import { useNavigate } from 'react-router-dom';
+import { RUTA } from '../../route';
 
 export const VistaSolicitudesPendientes = () => {
     const [solicitudesPendientes, setSolicitudesPendientes] = useState([]);
+    const navigate= useNavigate();
     
 
     useEffect(() => {
@@ -25,7 +28,7 @@ export const VistaSolicitudesPendientes = () => {
 
     const actualizarMonto = async (cliente, monto) => {
         try {
-            await axios.put('http://localhost:8080/actualizarMonto', { cliente, monto });
+            await axios.put(`${RUTA}/actualizarMonto`, { cliente, monto });
             console.log('Monto actualizado exitosamente');
         } catch (error) {
             console.error('Error actualizando monto:', error);
@@ -35,7 +38,7 @@ export const VistaSolicitudesPendientes = () => {
     const handleLinkClick = async (cliente, monto, event) => {
         event.preventDefault(); // Prevenir la navegación por defecto
         await actualizarMonto(cliente, monto);
-        window.location.href= `/cliente/${cliente}`;
+        navigate(`/cliente/${cliente}`);
     };
 
     return (

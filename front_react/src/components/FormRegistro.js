@@ -4,6 +4,7 @@ import { Navigate } from 'react-router-dom';
 import MainLayout from './MainLayout';
 import './css/registro_form.css';
 import axios from 'axios';
+import { RUTA } from '../route';
 
 const FormRegistro = () => {
   const [form] = Form.useForm();
@@ -33,7 +34,7 @@ const FormRegistro = () => {
     // Cargar lista de nombres de clientes al montar el componente
     const fetchClientes = async () => {
       try {
-        const response = await axios.get('http://localhost:8080/clienteNombre');
+        const response = await axios.get(`${RUTA}/clienteNombre`);
         setNombreClientes(response.data.Data.map(cliente => cliente.nombre));
       } catch (error) {
         console.error('Error al obtener los clientes', error);

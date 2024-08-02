@@ -3,6 +3,9 @@ import axios from 'axios';
 import { Upload, Button, Form, Card, Image, message, Row, Col } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
 import MainLayout from './MainLayout';
+import { useNavigate } from 'react-router-dom';
+import { RUTA  } from '../route';
+
 
 const FileUploadForm = () => {
   const [files, setFiles] = useState({
@@ -14,6 +17,7 @@ const FileUploadForm = () => {
     referenciaLaboral: null,
     servicios: null
   });
+  const navigate= useNavigate();
   
   const [previews, setPreviews] = useState({
     cedula: null,
@@ -68,14 +72,14 @@ const FileUploadForm = () => {
     formData.append('referenciaLaboral', referenciaLaboral);
     formData.append('servicios', servicios);
     try {
-      await axios.post('http://localhost:8080/upload', formData, {
+      await axios.post(`${RUTA}/upload`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
       });
 
       message.success('Documentos subidos exitosamente');
-      window.location.href = '/vista_previa';
+      navigate('/vista_previa');
     } catch (error) {
       console.error('Error al subir los documentos:', error);
       message.error('Error al subir los documentos');

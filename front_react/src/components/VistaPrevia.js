@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Card, Row, Col, Modal } from 'antd';
 import MainLayout from './MainLayout';
+import { RUTA } from '../route';
+
 
 const { Meta } = Card;
 
@@ -47,10 +49,10 @@ export const VistaPrevia = () => {
               title='Identificación'
               cover={
                 <img
-                  src={`http://localhost:8080/cedula/${cedula}`}
+                  src={`${RUTA}/cedula/${cedula}`}
                   alt='Identificación'
                   className='image'
-                  onClick={() => handlePreview(`http://localhost:8080/cedula/${cedula}`)}
+                  onClick={() => handlePreview(`${RUTA}/cedula/${cedula}`)}
                   style={{ padding: 5 }}
                 />
               }
@@ -74,10 +76,10 @@ export const VistaPrevia = () => {
               title='Carta Laboral'
               cover={
                 <img
-                  src={`http://localhost:8080/carta-laboral/${cartaLaboral}`}
+                  src={`${RUTA}/carta-laboral/${cartaLaboral}`}
                   alt='Carta Laboral'
                   className='image'
-                  onClick={() => handlePreview(`http://localhost:8080/carta-laboral/${cartaLaboral}`)}
+                  onClick={() => handlePreview(`${RUTA}/carta-laboral/${cartaLaboral}`)}
                   style={{ padding: 5 }}
                 />
               }
