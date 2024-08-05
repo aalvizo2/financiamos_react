@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import MainLayout from './MainLayout';
-import { Table, Tag, Button, Modal, Form, Input, Row, Col, Image, message,  Upload } from 'antd';
+import { Table, Tag, Button, Modal, Form, Input, Row, Col, Image, message,  Upload, Popconfirm } from 'antd';
 import {UploadOutlined} from '@ant-design/icons';
 import { RUTA } from '../route';
 
@@ -130,11 +130,31 @@ export const ClientesLista = () => {
       title: 'Acciones',
       key: 'acciones',
       render: (text, record) => (
-        <Button onClick={() => handleOpenModal(record.nombre)}>Ver Detalles</Button>
+        <div>
+            <Button onClick={() => handleOpenModal(record.nombre)}>Ver Detalles</Button>
+            <Popconfirm
+               title='Estas segúro de eliminar este cliente'
+               okText='Sí'
+               cancelText='No'
+               onConfirm={() => Eliminar(record)}
+            >
+              <Button>Eliminar</Button>
+            </Popconfirm>
+        </div>
+        
       ),
     }
   ];
   
+
+  //Eliminar 
+  const Eliminar = async(record) =>{
+    const response= await axios.delete(`${RUTA}/eliminarCliente/${record.nombre}`);
+    if(response.status === 200){
+      message.success('Operación realizada con éxito');
+    }
+    fetchData();
+  }
 
     // Handle file upload
     const beforeUpload = (file) => {
@@ -142,7 +162,7 @@ export const ClientesLista = () => {
       if (!isJpgOrPng) {
         message.error('Solo puedes subir archivos JPG/PNG!');
       }
-      const isLt2M = file.size / 1024 / 1024 < 2;
+      const isLt2M = file.size / 2024 / 2024 < 2;
       if (!isLt2M) {
         message.error('La imagen debe ser menor a 2MB!');
       }
@@ -205,7 +225,7 @@ export const ClientesLista = () => {
         onChange={handleSearchChange}
         style={{ marginBottom: '16px', width: '300px' }}
       />
-      <Table dataSource={filteredDatos} columns={columns} />
+      <Table dataSource={filteredDatos} columns={columns} pagination={true} className='table-responsive'/>
 
       {clienteActual && (
         <Modal

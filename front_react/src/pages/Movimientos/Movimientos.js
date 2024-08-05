@@ -75,7 +75,7 @@ export const Movimientos = () => {
   return (
     <>
      <MainLayout>
-        <Table dataSource={clientes} rowKey="nombre">
+        <Table dataSource={clientes} rowKey="nombre" pagination={true} className='table-responsive'>
           <Column title="Nombre" dataIndex="nombre" key="nombre" />
           <Column
             title="Última Fecha de Pago"

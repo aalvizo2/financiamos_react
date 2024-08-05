@@ -43,7 +43,7 @@ export const VistaSolicitudesPendientes = () => {
 
     return (
         <>
-            <div style={{ display: 'flex', flexWrap: 'wrap', marginLeft: '260px', marginTop: '5px'}}>
+            
                 {solicitudesPendientes.map((solicitud, index) => (
                     <div key={index} style={{ margin: 0 }}>
                         <Card title={`Solicitud #${index + 1}`} style={{ width: 200 }}>
@@ -58,7 +58,7 @@ export const VistaSolicitudesPendientes = () => {
                         </Card>
                     </div>
                 ))}
-            </div>
+           
         </>
     );
 };
