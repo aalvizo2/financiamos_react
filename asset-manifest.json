@@ -1,16 +1,16 @@
 {
   "files": {
     "main.css": "/financiamos_react/static/css/main.39b082fe.css",
-    "main.js": "/financiamos_react/static/js/main.b3fcccfc.js",
+    "main.js": "/financiamos_react/static/js/main.23c72547.js",
     "static/js/453.bf3f30e0.chunk.js": "/financiamos_react/static/js/453.bf3f30e0.chunk.js",
     "static/media/financiera.png": "/financiamos_react/static/media/financiera.4c77bcc79b68a567203c.png",
     "index.html": "/financiamos_react/index.html",
     "main.39b082fe.css.map": "/financiamos_react/static/css/main.39b082fe.css.map",
-    "main.b3fcccfc.js.map": "/financiamos_react/static/js/main.b3fcccfc.js.map",
+    "main.23c72547.js.map": "/financiamos_react/static/js/main.23c72547.js.map",
     "453.bf3f30e0.chunk.js.map": "/financiamos_react/static/js/453.bf3f30e0.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.39b082fe.css",
-    "static/js/main.b3fcccfc.js"
+    "static/js/main.23c72547.js"
   ]
 }
