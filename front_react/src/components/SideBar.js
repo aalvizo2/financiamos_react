@@ -22,6 +22,7 @@ const SideBar = ({ collapsed, onCollapse }) => {
   const location = useLocation();
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
   const [permisos, setPermisos] = useState([]);
+  const [numSolicitudesPendientes, setNumSolicitudesPendientes] = useState('');
 
   useEffect(() => {
     const handleResize = () => {
@@ -56,13 +57,26 @@ const SideBar = ({ collapsed, onCollapse }) => {
     getRoles();
   }, []);
 
+  useEffect(() => {
+    const solicitudesGuardadas = localStorage.getItem('solicitudesPendientes');
+    if (solicitudesGuardadas) {
+      const solicitudes = JSON.parse(solicitudesGuardadas);
+      setNumSolicitudesPendientes(solicitudes.length);
+    }
+  }, []);
+
   const adminOptions = [
     { key: '/inicio', icon: <HomeOutlined />, label: 'Inicio' },
     { key: '/registro', icon: <UserOutlined />, label: 'Registro' },
     { key: '/pendientes', icon: <PlusOutlined />, label: 'Nuevo Crédito' },
     { key: '/indicador', icon: <FundProjectionScreenOutlined />, label: 'Pagos' },
     { key: '/clientes', icon: <SolutionOutlined />, label: 'Clientes' },
-    { key: '/solicitudes', icon: <DollarCircleOutlined />, label: 'Solicitudes' },
+    { 
+      key: '/solicitudes', 
+      icon: <DollarCircleOutlined />, 
+      label: 'Solicitudes', 
+      count: numSolicitudesPendientes > 0 ? numSolicitudesPendientes : null
+     },
     { key: '/movimientos', icon: <HistoryOutlined />, label: 'Movimientos' },
     { key: '/corteCaja', icon: <SnippetsOutlined />, label: 'Corte de Caja' },
     { key: '/cobranza', icon: <FaMoneyCheckAlt />, label: 'Cobranza' },
@@ -85,7 +99,14 @@ const SideBar = ({ collapsed, onCollapse }) => {
           const option = adminOptions.find(option => option.key === `/${permiso}`);
           return option ? (
             <Menu.Item key={option.key} icon={option.icon}>
-              <span>{option.label}</span>
+              <span>
+                {option.label} 
+                {option.count && option.count > 0 && (
+                  <span style={{ marginLeft: 10, color: 'red' }}>
+                    ({option.count})
+                  </span>
+                )}
+              </span>
               <Link to={option.key} />
             </Menu.Item>
           ) : null;

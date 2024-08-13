@@ -77,7 +77,7 @@ export const NombreCliente = () => {
           dataSource={filteredNombres}
           rowKey="nombre"
           pagination={{ pageSize: 10 }}
-          responsive={true}
+          className='table-responsive'
         />
       </Content>
     </MainLayout>

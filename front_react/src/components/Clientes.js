@@ -14,7 +14,7 @@ export const ClientesLista = () => {
   const [clienteActual, setClienteActual] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [documentos, setDocumentos] = useState([]);
-  const [filteredDatos, setFilteredDatos] = useState([]);
+  const [filteredDatos, setFilteredDatos] = useState(datos);
   const [searchTerm, setSearchTerm] = useState('');
   const [form] = Form.useForm();
   
@@ -205,17 +205,16 @@ export const ClientesLista = () => {
     ));
   };
 
-
-  const handleSearchChange = (e) => {
-    const value = e.target.value.toLowerCase();
-    setSearchTerm(value);
-    // Filter data based on the search term
+  useEffect(() => {
     const filtered = datos.filter(cliente =>
-      cliente.nombre.toLowerCase().includes(value)
+      cliente.nombre.toLowerCase().includes(searchTerm.toLowerCase())
     );
     setFilteredDatos(filtered);
-  };
+  }, [searchTerm, datos]); // Ejecutar cada vez que searchTerm o datos cambien
 
+  const handleSearchChange = (e) => {
+    setSearchTerm(e.target.value); // Actualizar el término de búsqueda
+  };
   return (
     <MainLayout>
       <h1>Usuarios</h1>
@@ -223,7 +222,7 @@ export const ClientesLista = () => {
         placeholder="Buscar por nombre"
         value={searchTerm}
         onChange={handleSearchChange}
-        style={{ marginBottom: '16px', width: '300px' }}
+        style={{ marginBottom: '16px', width: '30%' }}
       />
       <Table dataSource={filteredDatos} columns={columns} pagination={true} className='table-responsive'/>
 

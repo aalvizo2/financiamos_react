@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import MainLayout from '../../components/MainLayout';
 import axios from 'axios';
-import { Form, Input, Button, message, Select } from 'antd';
+import { Form, Input, Button, message, Select, Checkbox } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { RUTA } from '../../route';
 
@@ -9,25 +9,24 @@ const { Option } = Select;
 
 const Profile = () => {
   const [roleUser, setRoleUser] = useState('');
-  const navigate= useNavigate();
-
+  const navigate = useNavigate();
+  
   useEffect(() => {
     const getUsuario = async () => {
-      const user = localStorage.getItem('usuario');
-      if (user) {
-        try {
+      try {
+        const user = localStorage.getItem('usuario');
+        if (user) {
           const response = await axios.get(`${RUTA}/check-user/${user}`);
           setRoleUser(response.data.role);
-        } catch (error) {
-          message.error('Error al obtener el usuario');
         }
+      } catch (error) {
+        message.error('Error al obtener el usuario');
       }
     };
-
     getUsuario();
   }, []);
 
-  const handleSubmit = async (values) => {
+  const createUser = async (values) => {
     try {
       const response = await axios.post(`${RUTA}/create-user`, values);
       if (response.status === 200) {
@@ -44,9 +43,10 @@ const Profile = () => {
   const changePassword = async (value) => {
     try {
       const user = localStorage.getItem('usuario');
-      await axios.put(`${RUTA}/update/${user}`, value);
-      message.success('Contraseña cambiada correctamente');
-      navigate('/inicio');
+      if (user) {
+        await axios.post(`${RUTA}/change-password`, { user, ...value });
+        message.success('Contraseña cambiada exitosamente');
+      }
     } catch (error) {
       message.error('Error al cambiar la contraseña');
     }
@@ -63,43 +63,82 @@ const Profile = () => {
 
   return (
     <MainLayout>
-      {roleUser === 'admin' ? (
-        <div className="profile-container">
-          <h2>Crear Nuevo Usuario</h2>
-          <Form layout="vertical" onFinish={handleSubmit}>
-            <Form.Item
-              name="usuario"
-              label="Nombre de Usuario"
-              rules={[{ required: true, message: 'Por favor ingrese el nombre de usuario' }]}
-            >
-              <Input />
-            </Form.Item>
-            <Form.Item
-              name="pass"
-              label="Contraseña"
-              rules={[{ required: true, message: 'Por favor ingrese la contraseña' }]}
-            >
-              <Input.Password />
-            </Form.Item>
-            <Form.Item
-              name="role"
-              label="Rol"
-              rules={[{ required: true, message: 'Por favor seleccione un rol' }]}
-            >
-              <Select placeholder='Selecciona un Rol'>
-                <Option value='cajero-administrador'>Caja</Option>
-                <Option value='ventas-campo'>Ventas Campo</Option>
-              </Select>
-            </Form.Item>
-            <Form.Item>
-              <Button type="primary" htmlType="submit">
-                Crear Usuario
-              </Button>
-            </Form.Item>
-          </Form>
+      <div>
+        {roleUser === 'admin' ? (
+          <>
+            <Form layout='vertical' onFinish={createUser}>
+              <h1>Crear Usuario</h1>
+              <Form.Item
+                name="username"
+                label="Nombre de Usuario"
+                rules={[{ required: true, message: 'Por favor ingrese el nombre de usuario' }]}
+              >
+                <Input />
+              </Form.Item>
+              <Form.Item
+                name="role"
+                label="Rol"
+                rules={[{ required: true, message: 'Por favor seleccione un rol' }]}
+              >
+                <Select placeholder="Selecciona un rol">
+                  <Option value='admin'>Administrador</Option>
+                  <Option value='user'>Usuario</Option>
+                  <Option value='ventas-campo'>Ventas Campo</Option>
+                </Select>
+              </Form.Item>
+              <Form.Item
+                name="permisos"
+                label="Permisos"
+                rules={[{ required: true, message: 'Por favor seleccione los permisos' }]}
+              >
+                <Checkbox.Group>
+                  <Checkbox value="inicio">Inicio</Checkbox>
+                  <Checkbox value="registro">Registro</Checkbox>
+                  <Checkbox value="pendientes">Nuevo Crédito</Checkbox>
+                  <Checkbox value="indicador">Pagos</Checkbox>
+                  <Checkbox value="clientes">Clientes</Checkbox>
+                  <Checkbox value="solicitudes">Solicitudes</Checkbox>
+                  <Checkbox value="movimientos">Movimientos</Checkbox>
+                  <Checkbox value="corteCaja">Corte de Caja</Checkbox>
+                  <Checkbox value="cobranza">Cobranza</Checkbox>
+                  <Checkbox value="gastos">Gastos</Checkbox>
+                </Checkbox.Group>
+              </Form.Item>
+              <Form.Item>
+                <Button type="primary" htmlType="submit">
+                  Crear Usuario
+                </Button>
+              </Form.Item>
+            </Form>
 
+            <Form layout='vertical' onFinish={changePassword}>
+              <h1>Cambiar Contraseña</h1>
+              <Form.Item
+                name='pass'
+                label='Contraseña Nueva'
+                rules={[{ required: true, message: 'Favor de ingresar este campo' }]}
+              >
+                <Input.Password />
+              </Form.Item>
+              <Form.Item
+                name='confirmPass'
+                label='Repetir contraseña'
+                dependencies={['pass']}
+                rules={[
+                  { required: true, message: 'Por favor confirme la contraseña' },
+                  validateConfirmPassword,
+                ]}
+              >
+                <Input.Password />
+              </Form.Item>
+              <Form.Item>
+                <Button type='primary' htmlType='submit'>Cambiar Contraseña</Button>
+              </Form.Item>
+            </Form>
+          </>
+        ) : (
           <Form layout='vertical' onFinish={changePassword}>
-            <h1>Cambiar contraseña</h1>
+            <h1>Cambiar Contraseña</h1>
             <Form.Item
               name='pass'
               label='Contraseña Nueva'
@@ -118,36 +157,14 @@ const Profile = () => {
             >
               <Input.Password />
             </Form.Item>
-            <Button type='primary' htmlType='submit'>Cambiar Contraseña</Button>
+            <Form.Item>
+              <Button type='primary' htmlType='submit'>Cambiar Contraseña</Button>
+            </Form.Item>
           </Form>
-        </div>
-      ) : (
-        <Form layout='vertical' onFinish={changePassword}>
-          <h1>Cambiar contraseña</h1>
-          <Form.Item
-            name='pass'
-            label='Contraseña Nueva'
-            rules={[{ required: true, message: 'Favor de ingresar este campo' }]}
-          >
-            <Input.Password />
-          </Form.Item>
-          <Form.Item
-            name='confirmPass'
-            label='Repetir contraseña'
-            dependencies={['pass']}
-            rules={[
-              { required: true, message: 'Por favor confirme la contraseña' },
-              validateConfirmPassword,
-            ]}
-          >
-            <Input.Password />
-          </Form.Item>
-          <Button type='primary' htmlType='submit'>Cambiar Contraseña</Button>
-        </Form>
-      )}
+        )}
+      </div>
     </MainLayout>
   );
 };
 
 export default Profile;
-

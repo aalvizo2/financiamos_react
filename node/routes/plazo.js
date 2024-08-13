@@ -99,6 +99,9 @@ Router.put('/actualizarEstatus/:cliente', (req, res) => {
             const interes = 0.1;
             const montoActualizado = monto;
             const fechaInicial = moment(fechaInicio, 'YYYY-MM-DD');
+            const fechaFormateada = fechaInicial.format('YYYY-MM-DD')
+
+            console.log('fecha con formato', fechaFormateada)
             const hoy = moment();
             let proximoPago;
 

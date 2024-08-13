@@ -3,10 +3,10 @@ import '../components/css/home.css';
 import logo from '../components/img/financiera.png';
 import axios from 'axios';
 import { Navigate } from 'react-router-dom';
-import { Form, Input, Button, Alert, Layout } from 'antd';
+import { Form, Input, Button, Alert, Layout, Spin } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import { useAuth } from '../context/AuthContext';
-import {RUTA} from '../route';
+import { RUTA } from '../route';
 
 const { Content } = Layout;
 
@@ -23,10 +23,12 @@ const MainBar = () => {
 const LoginForm = () => {
   const [error, setError] = useState('');
   const [successRedirect, setSuccessRedirect] = useState(false);
-  const { login } = useAuth(); // Hook para acceder a los métodos del contexto de autenticación
+  const { login } = useAuth();
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (values) => {
     try {
+      setLoading(true);
       await axios.post(`${RUTA}/auth`, {
         usuario: values.usuario,
         pass: values.pass,
@@ -44,6 +46,8 @@ const LoginForm = () => {
       } else {
         setError('Ocurrió un error. Por favor intenta más tarde');
       }
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -63,6 +67,7 @@ const LoginForm = () => {
           <Input
             prefix={<UserOutlined />}
             placeholder="Usuario"
+            disabled={loading}
           />
         </Form.Item>
         <Form.Item
@@ -72,15 +77,27 @@ const LoginForm = () => {
           <Input.Password
             prefix={<LockOutlined />}
             placeholder="Contraseña"
+            disabled={loading}
           />
         </Form.Item>
         <Form.Item>
-          <Button type="primary" htmlType="submit" style={{ width: '100%' }}>
+          <Button 
+            type="primary" 
+            htmlType="submit" 
+            style={{ width: '100%' }}
+            loading={loading} // Muestra el indicador de carga en el botón
+            disabled={loading} // Deshabilita el botón mientras se está cargando
+          >
             Ingresar
           </Button>
           {successRedirect && <Navigate to="/inicio" />}
         </Form.Item>
       </Form>
+      {loading && (
+        <div style={{ textAlign: 'center', marginTop: 20 }}>
+          <Spin size="large" />
+        </div>
+      )}
     </div>
   );
 };
@@ -99,4 +116,3 @@ export const Home = () => {
 };
 
 export default Home;
-

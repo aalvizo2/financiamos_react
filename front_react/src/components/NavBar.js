@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Layout, Menu, Dropdown, Button } from 'antd';
 import { UserOutlined, MenuOutlined } from '@ant-design/icons';
-import { Navigate } from 'react-router-dom';
+import { Navigate, Link } from 'react-router-dom';
 import logo from './img/financiera.png';
 import './css/navbar.css';
 
@@ -32,7 +32,7 @@ export const NavBar = () => {
   const menu = (
     <Menu>
       <Menu.Item key="1">
-        <a href="/profile">{usuario}</a>
+        <Link to='/profile'>{usuario}</Link>
       </Menu.Item>
       <Menu.Item key="2" onClick={handleLogout}>
         Cerrar Sesión
