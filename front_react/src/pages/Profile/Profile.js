@@ -10,7 +10,7 @@ const { Option } = Select;
 const Profile = () => {
   const [roleUser, setRoleUser] = useState('');
   const navigate = useNavigate();
-  
+
   useEffect(() => {
     const getUsuario = async () => {
       try {
@@ -103,6 +103,24 @@ const Profile = () => {
                   <Checkbox value="cobranza">Cobranza</Checkbox>
                   <Checkbox value="gastos">Gastos</Checkbox>
                 </Checkbox.Group>
+              </Form.Item>
+              <Form.Item
+                name='pass'
+                label='Contraseña Nueva'
+                rules={[{ required: true, message: 'Favor de ingresar este campo' }]}
+              >
+                <Input.Password />
+              </Form.Item>
+              <Form.Item
+                name='confirmPass'
+                label='Repetir contraseña'
+                dependencies={['pass']}
+                rules={[
+                  { required: true, message: 'Por favor confirme la contraseña' },
+                  validateConfirmPassword,
+                ]}
+              >
+                <Input.Password />
               </Form.Item>
               <Form.Item>
                 <Button type="primary" htmlType="submit">

@@ -82,16 +82,17 @@ export const Abono = () => {
       const abonoCapital = Math.round(abono - interes);
       const updatedMonto = Math.round(selectedClient.monto - abonoCapital);
       const updatedFechaInicio = moment().format('DD [de] MMMM [de] YYYY');
-
-      let updatedFechaPago;
       const today = moment();
-
+  
+      // Ajusta la lógica de fechas para que coincida con el rango esperado
+      let updatedFechaPago;
+  
       if (today.date() <= 15) {
-        updatedFechaPago = today.date(15).format('DD [de] MMMM [de] YYYY');
+        updatedFechaPago = today.date(30).format('DD [de] MMMM [de] YYYY');
       } else {
         updatedFechaPago = today.add(1, 'month').date(15).format('DD [de] MMMM [de] YYYY');
       }
-
+  
       await axios.post(`${RUTA}/actualizarPago`, {
         nombre: selectedClient.nombre,
         monto: updatedMonto,
@@ -101,13 +102,13 @@ export const Abono = () => {
         interes,
         abonoCapital
       });
-
+  
       setResultados(resultados.map(cliente =>
         cliente.nombre === selectedClient.nombre
           ? { ...cliente, monto: updatedMonto, fechaInicio: updatedFechaInicio, fechaPago: updatedFechaPago }
           : cliente
       ));
-
+  
       setIsModalVisible(false);
       message.success('Pago registrado con éxito');
     } catch (error) {
@@ -189,7 +190,7 @@ export const Abono = () => {
             label="Interés"
             rules={[{ required: true, message: 'Por favor ingrese el interés' }]}
           >
-            <Input type="number" disabled/>
+            <Input type="number" />
           </Form.Item>
         </Form>
       </Modal>
