@@ -79,7 +79,11 @@ export const Abono = () => {
   const handleOk = async () => {
     try {
       const { abono, interes } = await form.validateFields();
-      const abonoCapital = Math.round(abono - interes);
+      const abonoCapital = Math.round(
+        abono > 0 
+          ? abono
+          : abono - interes
+      );
       const updatedMonto = Math.round(selectedClient.monto - abonoCapital);
       const updatedFechaInicio = moment().format('DD [de] MMMM [de] YYYY');
       const today = moment();
@@ -92,8 +96,8 @@ export const Abono = () => {
       } else {
         updatedFechaPago = today.add(1, 'month').date(15).format('DD [de] MMMM [de] YYYY');
       }
-  
-      await axios.post(`${RUTA}/actualizarPago`, {
+
+      const formData= {
         nombre: selectedClient.nombre,
         monto: updatedMonto,
         fechaInicio: updatedFechaInicio,
@@ -101,7 +105,13 @@ export const Abono = () => {
         abono,
         interes,
         abonoCapital
-      });
+      }
+  
+      await axios.post(`${RUTA}/actualizarPago`, 
+        formData
+      );
+
+      console.log('Datos a enviar', formData);
   
       setResultados(resultados.map(cliente =>
         cliente.nombre === selectedClient.nombre
@@ -124,7 +134,7 @@ export const Abono = () => {
   const isFechaPagoAtrasada = (fechaPago, fechaInicio) => {
     const fechaPagoMoment = moment(fechaPago, 'DD [de] MMMM [de] YYYY');
     //const fechaInicioMoment = moment(fechaInicio, 'DD [de] MMMM [de] YYYY');
-    return moment().diff(fechaPagoMoment, 'days') > 7 && moment().isAfter(fechaPagoMoment);
+    return moment().diff(fechaPagoMoment, 'days') > 1 && moment().isAfter(fechaPagoMoment);
   };
 
   return (

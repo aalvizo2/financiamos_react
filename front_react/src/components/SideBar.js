@@ -23,6 +23,7 @@ const SideBar = ({ collapsed, onCollapse }) => {
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
   const [permisos, setPermisos] = useState([]);
   const [numSolicitudesPendientes, setNumSolicitudesPendientes] = useState('');
+  const [collapsedState, setCollapsedState] = useState(isMobile);
 
   useEffect(() => {
     const handleResize = () => {
@@ -31,14 +32,15 @@ const SideBar = ({ collapsed, onCollapse }) => {
 
     window.addEventListener('resize', handleResize);
 
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
-
-  useEffect(() => {
+    // Update the collapsed state based on screen size
     if (isMobile) {
-      onCollapse(true);
+      setCollapsedState(true);
+    } else {
+      setCollapsedState(collapsed);
     }
-  }, [isMobile, onCollapse]);
+
+    return () => window.removeEventListener('resize', handleResize);
+  }, [isMobile, collapsed]);
 
   useEffect(() => {
     const getRoles = async () => {
@@ -83,11 +85,17 @@ const SideBar = ({ collapsed, onCollapse }) => {
     { key: '/gastos', icon: <FaMoneyCheckAlt />, label: 'Gastos' }
   ];
 
+  // Handle collapse toggle
+  const handleCollapseToggle = (collapsed) => {
+    setCollapsedState(collapsed);
+    onCollapse(collapsed);
+  };
+
   return (
     <Sider
       collapsible
-      collapsed={collapsed}
-      onCollapse={onCollapse}
+      collapsed={collapsedState}
+      onCollapse={handleCollapseToggle}
       style={{ backgroundColor: '#EB8114' }}
     >
       <Menu
