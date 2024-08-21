@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Table, Form, InputNumber, Select, Button, DatePicker, message } from 'antd';
+import { Table, Form, InputNumber, Select, Button, DatePicker, message, Row, Col } from 'antd';
 import axios from 'axios';
 import moment from 'moment';
 import 'moment/locale/es';
@@ -62,33 +62,41 @@ export const GastoComponent = () => {
 
   return (
     <>
-    <h1>Control de Gastos</h1>
-      <Form form={form} layout="inline" onFinish={handleSubmit}>
-        <Form.Item
-          name="tipoGasto"
-          label="Tipo de Gasto"
-          rules={[{ required: true, message: 'Por favor selecciona un tipo de gasto' }]}
-        >
-          <Select style={{ width: 200 }}>
-            <Option value="Gasolina Calle">Gasolina Calle</Option>
-            <Option value="Nomina">Nomina</Option>
-            <Option value="Gasolina Sebas">Gasolina Sebas</Option>
-          </Select>
-        </Form.Item>
-        <Form.Item
-          name="cantidad"
-          label="Cantidad"
-          rules={[{ required: true, message: 'Por favor ingresa la cantidad' }]}
-        >
-          <InputNumber min={0} style={{ width: 120 }} />
-        </Form.Item>
-        <Form.Item
-          name="fecha"
-          label="Fecha"
-          rules={[{ required: true, message: 'Por favor selecciona la fecha' }]}
-        >
-          <DatePicker locale={locale} style={{ width: 200 }} />
-        </Form.Item>
+      <h1>Control de Gastos</h1>
+      <Form form={form} layout="vertical" onFinish={handleSubmit}>
+        <Row gutter={[16, 16]}>
+          <Col xs={24} sm={8}>
+            <Form.Item
+              name="tipoGasto"
+              label="Tipo de Gasto"
+              rules={[{ required: true, message: 'Por favor selecciona un tipo de gasto' }]}
+            >
+              <Select style={{ width: '100%' }}>
+                <Option value="Gasolina Calle">Gasolina Calle</Option>
+                <Option value="Nomina">Nomina</Option>
+                <Option value="Gasolina Sebas">Gasolina Sebas</Option>
+              </Select>
+            </Form.Item>
+          </Col>
+          <Col xs={24} sm={8}>
+            <Form.Item
+              name="cantidad"
+              label="Cantidad"
+              rules={[{ required: true, message: 'Por favor ingresa la cantidad' }]}
+            >
+              <InputNumber min={0} style={{ width: '100%' }} />
+            </Form.Item>
+          </Col>
+          <Col xs={24} sm={8}>
+            <Form.Item
+              name="fecha"
+              label="Fecha"
+              rules={[{ required: true, message: 'Por favor selecciona la fecha' }]}
+            >
+              <DatePicker locale={locale} style={{ width: '100%' }} />
+            </Form.Item>
+          </Col>
+        </Row>
         <Form.Item>
           <Button type="primary" htmlType="submit">
             Agregar Gasto
