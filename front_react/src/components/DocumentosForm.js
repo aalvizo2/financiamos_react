@@ -18,6 +18,7 @@ const FileUploadForm = () => {
     servicios: null
   });
   const navigate= useNavigate();
+  const [loading, setLoading]= useState(false);
   
   const [previews, setPreviews] = useState({
     cedula: null,
@@ -47,6 +48,7 @@ const FileUploadForm = () => {
   };
 
   const handleSubmit = async () => {
+    setLoading(true);
     const {
       cedula,
       cartaLaboral,
@@ -77,12 +79,15 @@ const FileUploadForm = () => {
           'Content-Type': 'multipart/form-data',
         },
       });
+      
 
       message.success('Documentos subidos exitosamente');
       navigate('/vista_previa');
     } catch (error) {
       console.error('Error al subir los documentos:', error);
       message.error('Error al subir los documentos');
+    }finally{
+      setLoading(false);
     }
   };
 
@@ -116,7 +121,7 @@ const FileUploadForm = () => {
             ))}
           </Row>
           <Form.Item style={{ textAlign: 'center' }}>
-            <Button type="primary" htmlType="submit">
+            <Button type="primary" htmlType="submit" loading={loading}>
               Enviar
             </Button>
           </Form.Item>
