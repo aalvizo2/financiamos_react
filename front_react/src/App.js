@@ -24,6 +24,7 @@ import Cobranza from './pages/Cobranza/Cobranza';
 import { Gasto } from './pages/Gastos/Gasto';
 import { AuthProvider } from './context/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 
 const basename = '/financiamos_react';
