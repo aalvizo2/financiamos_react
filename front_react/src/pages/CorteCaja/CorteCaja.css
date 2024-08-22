@@ -1,0 +1,21 @@
+.botones{
+    display: flex;
+}
+
+.botones .ant-btn-primary{
+    margin-left: 5px;
+}
+
+@media screen and (max-width: 700px) {
+    .botones{
+        display: flex;
+        flex-direction: column;
+        
+    }
+
+    .botones .ant-btn-primary{
+        margin-bottom: 5px;
+        margin-top: 5px;
+        display: inline;
+    }
+}

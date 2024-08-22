@@ -71,7 +71,8 @@ export const Abono = () => {
   const pagar = (record) => {
     setSelectedClient(record);
     form.setFieldsValue({
-      interes: Math.round(record.monto * 0.1)
+      interes: Math.round(record.monto * 0.1),
+      abonoCapital: 0
     });
     setIsModalVisible(true);
   };
@@ -79,48 +80,46 @@ export const Abono = () => {
   const handleOk = async () => {
     try {
       const { abono, interes } = await form.validateFields();
-      const abonoCapital = Math.round(
-        abono > 0 
-          ? abono
-          : abono - interes
-      );
+      const abonoCapital = abono > 0 ? Math.round(abono) : 0;
       const updatedMonto = Math.round(selectedClient.monto - abonoCapital);
       const updatedFechaInicio = moment().format('DD [de] MMMM [de] YYYY');
       const today = moment();
-  
+      
       // Ajusta la lógica de fechas para que coincida con el rango esperado
       let updatedFechaPago;
-  
+      
       if (today.date() <= 15) {
         updatedFechaPago = today.date(30).format('DD [de] MMMM [de] YYYY');
       } else {
         updatedFechaPago = today.add(1, 'month').date(15).format('DD [de] MMMM [de] YYYY');
       }
-
-      const formData= {
+  
+      const formData = {
         nombre: selectedClient.nombre,
         monto: updatedMonto,
         fechaInicio: updatedFechaInicio,
         fechaPago: updatedFechaPago,
         abono,
-        interes,
+        interes, // Mantén el interés aquí para enviarlo al backend
         abonoCapital
       }
+      
+      await axios.post(`${RUTA}/actualizarPago`, formData);
   
-      await axios.post(`${RUTA}/actualizarPago`, 
-        formData
-      );
-
       console.log('Datos a enviar', formData);
   
       setResultados(resultados.map(cliente =>
         cliente.nombre === selectedClient.nombre
-          ? { ...cliente, monto: updatedMonto, fechaInicio: updatedFechaInicio, fechaPago: updatedFechaPago }
+          ? { ...cliente, monto: updatedMonto, fechaInicio: updatedFechaInicio, fechaPago: updatedFechaPago, interes: 0 } // Reiniciar interés en el estado local
           : cliente
       ));
   
       setIsModalVisible(false);
       message.success('Pago registrado con éxito');
+      
+      // Reiniciar el campo de interés en el formulario
+    
+  
     } catch (error) {
       console.error('Error al registrar el pago:', error);
       message.error('Error al registrar el pago');
@@ -198,7 +197,7 @@ export const Abono = () => {
           <Form.Item
             name="interes"
             label="Interés"
-            rules={[{ required: true, message: 'Por favor ingrese el interés' }]}
+            rules={[{ required: false, message: 'Por favor ingrese el interés' }]}
           >
             <Input type="number" />
           </Form.Item>

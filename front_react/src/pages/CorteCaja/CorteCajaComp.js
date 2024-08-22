@@ -6,6 +6,7 @@ import 'moment/locale/es'; // Importa el locale en español
 import ReactToPrint from 'react-to-print';
 import MainLayout from '../../components/MainLayout';
 import {RUTA} from '../../route';
+import './CorteCaja.css';
 
 const { Title } = Typography;
 const { Column } = Table;
@@ -110,12 +111,17 @@ export const CorteCajaComp = () => {
           <Col>
             <Title level={2}>Corte de Caja</Title>
           </Col>
+          
+          
+          <div className='botones'>
+         
           <Col>
             <Input 
               placeholder="Ingresa la fecha" 
               onChange={(e) => setFechaFiltro(e.target.value)} 
               style={{ width: '200px', marginRight: '10px' }} 
             />
+          
             <Button type="primary" onClick={filterMovimientosByDate}>
               Filtrar
             </Button>
@@ -126,7 +132,9 @@ export const CorteCajaComp = () => {
               content={() => componentRef.current}
             />
           </Col>
+        </div>
         </Row>
+        
         <div ref={componentRef}>
           <Table dataSource={filterMovimientosByDate()} rowKey="id" pagination={true} className='table-responsive'>
             <Column title="Nombre" dataIndex="nombre" key="nombre" />

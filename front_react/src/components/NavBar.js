@@ -31,7 +31,19 @@ export const NavBar = () => {
     console.log('usuario obtenido', usuario);
     if (usuario) {
       const response = await axios.get(`${RUTA}/getRole/${usuario}`);
-      setRole(response.data.Data.role);
+      const Role = response.data.Data.role; 
+
+      let roleModificado; 
+
+      if(Role === 'admin'){
+        roleModificado = 'Administrador'
+      }else if(Role === 'ventas-campo'){
+        roleModificado = 'Ventas Campo'
+      }else if(Role === 'cajero-administrador'){
+        roleModificado ='Cajero Administrador'
+      }
+
+      setRole(roleModificado);
     }
   };
 

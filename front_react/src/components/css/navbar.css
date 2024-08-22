@@ -15,6 +15,7 @@
 .logo-container img {
   height: 40px;
   margin-right: 20px;
+  margin-bottom: 15px;
 }
 
 .user-info {
@@ -23,7 +24,7 @@
   color: #000000;
   margin-left: 20px;
   position: absolute;
-  bottom: 5px;
+  bottom: 15px;
   left: 35px;
 }
 
@@ -37,6 +38,7 @@
 
 .user-menu {
   margin-right: 15px;
+  margin-bottom: 15px;
 }
 
 .menu-icon {

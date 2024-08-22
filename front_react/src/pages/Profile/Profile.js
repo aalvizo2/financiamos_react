@@ -69,7 +69,7 @@ const Profile = () => {
             <Form layout='vertical' onFinish={createUser}>
               <h1>Crear Usuario</h1>
               <Form.Item
-                name="username"
+                name="usuario"
                 label="Nombre de Usuario"
                 rules={[{ required: true, message: 'Por favor ingrese el nombre de usuario' }]}
               >
