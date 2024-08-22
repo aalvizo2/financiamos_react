@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Card, Button } from 'antd';
+import { Card, Button, message } from 'antd';
 import { Link} from 'react-router-dom';
 import axios from 'axios';
 import MainLayout from '../../components/MainLayout';
@@ -7,24 +7,47 @@ import { useNavigate } from 'react-router-dom';
 import { RUTA } from '../../route';
 
 export const VistaSolicitudesPendientes = () => {
-    const [solicitudesPendientes, setSolicitudesPendientes] = useState([]);
+    
     const navigate= useNavigate();
+    const [solicitud, setSolicitud]= useState([]);
     
 
+
+    const getSolicitudes= async() => {
+        const response= await axios.get(`${RUTA}/getSolicitud`); 
+        setSolicitud(response.data.Data);
+    }; 
+
     useEffect(() => {
+        getSolicitudes();
+    }, []);
+    /*useEffect(() => {
         const solicitudesGuardadas = localStorage.getItem('solicitudesPendientes');
         if (solicitudesGuardadas) {
             setSolicitudesPendientes(JSON.parse(solicitudesGuardadas));
             console.log(solicitudesGuardadas);
         }
-    }, []);
+    }, []);*/
 
-    const eliminarSolicitud = (index) => {
+    /*const eliminarSolicitud = (index) => {
         const nuevasSolicitudes = [...solicitudesPendientes];
         nuevasSolicitudes.splice(index, 1);
         setSolicitudesPendientes(nuevasSolicitudes);
         localStorage.setItem('solicitudesPendientes', JSON.stringify(nuevasSolicitudes));
-    };
+    };¨*/
+
+    const eliminarSolicitud= async(id) => { 
+        console.log(id);
+
+        const response= await axios.delete(`${RUTA}/eliminarSolicitud/${id}`);
+        if(response.status === 204){
+            message.success('Operación realizada con éxito');
+        }else{
+            message.error('Error al eliminar solicitud');
+        };
+
+        getSolicitudes();
+    }
 
     const actualizarMonto = async (cliente, monto) => {
         try {
@@ -44,17 +67,17 @@ export const VistaSolicitudesPendientes = () => {
     return (
         <>
             
-                {solicitudesPendientes.map((solicitud, index) => (
+                {solicitud.map((solicitud, index) => (
                     <div key={index} style={{ margin: 0 }}>
                         <Card title={`Solicitud #${index + 1}`} style={{ width: 200 }}>
                             <Link 
-                                to={`/cliente/${solicitud.cliente}`}
-                                onClick={(event) => handleLinkClick(solicitud.cliente, solicitud.monto, event)}
+                                to={`/cliente/${solicitud.nombre}`}
+                                onClick={(event) => handleLinkClick(solicitud.nombre, solicitud.monto, event)}
                             >
-                                <p><strong>Cliente:</strong> {solicitud.cliente}</p>
+                                <p><strong>Cliente:</strong> {solicitud.nombre}</p>
                                 <p><strong>Monto:</strong> {solicitud.monto}</p>
                             </Link>
-                            <Button type="primary" onClick={() => eliminarSolicitud(index)}>Eliminar</Button>
+                            <Button type="primary" onClick={() => eliminarSolicitud(solicitud.Id)}>Eliminar</Button>
                         </Card>
                     </div>
                 ))}

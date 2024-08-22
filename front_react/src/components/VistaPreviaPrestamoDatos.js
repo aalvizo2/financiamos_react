@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Swal from 'sweetalert2';
-import { Typography, Layout, Form, Input, Button } from 'antd';
+import { Typography, Layout, Form, Input, Button, notification } from 'antd';
 import MainLayout from './MainLayout';
 import './css/vista_previacredito.css';
 import { RUTA } from '../route';
+import { useNavigate } from 'react-router-dom';
 
 const { Title } = Typography;
 
@@ -13,7 +14,7 @@ export const VistaPreviaPrestamoDatos = () => {
   const [plazo, setPlazo] = useState([]);
   const [abono, setAbono] = useState('');
   const [solicitudesPendientes, setSolicitudesPendientes] = useState([]);
-  
+  const navigate= useNavigate();
   const [pagoMinimo, setPagoMinimo] = useState('');
 
   useEffect(() => {
@@ -65,10 +66,11 @@ export const VistaPreviaPrestamoDatos = () => {
     const nuevasSolicitudesPendientes = [...solicitudesPendientes, nuevaSolicitud];
     setSolicitudesPendientes(nuevasSolicitudesPendientes);
     localStorage.setItem('solicitudesPendientes', JSON.stringify(nuevasSolicitudesPendientes));
-    Swal.fire({
-      title: 'Solicitud guardada en espera de aprobación',
-      icon: 'success',
-    });
+    const response = await axios.post(`${RUTA}/crearSolicitud`, nuevaSolicitud);
+    if(response.status === 200){
+      notification.success({message: response.data.message});
+    }
+    navigate('/inicio');
   };
 
   useEffect(() => {
