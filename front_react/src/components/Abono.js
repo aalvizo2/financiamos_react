@@ -33,6 +33,9 @@ export const Abono = () => {
   const [form] = Form.useForm();
   const [todosLosDatos, setTodosLosDatos] = useState([]);
 
+
+
+  let calculadoInteres = 0;
   useEffect(() => {
     // Cargar datos al principio
     const fetchData = async () => {
@@ -69,9 +72,18 @@ export const Abono = () => {
   }, [buscar, todosLosDatos]);
 
   const pagar = (record) => {
+    const today= moment();
+    console.log(record, 'datos grabados')
+
+    if(today.date() >= 8 && today.date() <= 15){
+      calculadoInteres= Math.round(record.monto * 0.1);
+    }else if(today.date() >= 23 && today.date() <= 30){
+      calculadoInteres = Math.round(record.monto *0.1);
+    }
     setSelectedClient(record);
+    
     form.setFieldsValue({
-      interes: Math.round(record.monto * 0.1),
+      interes: calculadoInteres,
       abonoCapital: 0
     });
     setIsModalVisible(true);
@@ -100,19 +112,27 @@ export const Abono = () => {
         fechaInicio: updatedFechaInicio,
         fechaPago: updatedFechaPago,
         abono,
-        interes, // Mantén el interés aquí para enviarlo al backend
+        interes, 
         abonoCapital
       }
       
+
+      
       await axios.post(`${RUTA}/actualizarPago`, formData);
-  
+      
       console.log('Datos a enviar', formData);
   
       setResultados(resultados.map(cliente =>
         cliente.nombre === selectedClient.nombre
-          ? { ...cliente, monto: updatedMonto, fechaInicio: updatedFechaInicio, fechaPago: updatedFechaPago, interes: 0 } // Reiniciar interés en el estado local
+          ? { ...cliente, monto: updatedMonto, fechaInicio: updatedFechaInicio, fechaPago: updatedFechaPago}
           : cliente
       ));
+      
+
+      console.log('datos despues de enviar', formData);
+      
+
+      form.resetFields();
   
       setIsModalVisible(false);
       message.success('Pago registrado con éxito');
@@ -128,6 +148,7 @@ export const Abono = () => {
 
   const handleCancel = () => {
     setIsModalVisible(false);
+    
   };
 
   const isFechaPagoAtrasada = (fechaPago, fechaInicio) => {
@@ -201,6 +222,8 @@ export const Abono = () => {
           >
             <Input type="number" />
           </Form.Item>
+
+         
         </Form>
       </Modal>
     </MainLayout>

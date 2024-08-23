@@ -1,11 +1,11 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { Table, Input, Button, Typography, Row, Col } from 'antd';
 import moment from 'moment';
 import 'moment/locale/es'; // Importa el locale en español
 import ReactToPrint from 'react-to-print';
 import MainLayout from '../../components/MainLayout';
-import {RUTA} from '../../route';
+import { RUTA } from '../../route';
 import './CorteCaja.css';
 
 const { Title } = Typography;
@@ -28,16 +28,17 @@ export const CorteCajaComp = () => {
   const [prestamos, setPrestamos] = useState([]);
   const [gastos, setGastos] = useState([]);
   const [fechaFiltro, setFechaFiltro] = useState('');
+  const [filteredData, setFilteredData] = useState([]);
   const [totalUtilidad, setTotalUtilidad] = useState(0);
   const [totalCaja, setTotalCaja] = useState(50000000);
   const [totalPrestamos, setTotalPrestamos] = useState(0);
   const [totalGastos, setTotalGastos] = useState(0);
   const initialCaja = 50000000;
 
-  const calculateTotals = useCallback((movimientos = [], prestamos = [], gastos = []) => {
-    const totalAbonos = movimientos.reduce((acc, curr) => acc + parseFloat(curr.abono) + parseFloat(curr.interes || 0), 0);
-    const totalGastos = gastos.reduce((acc, curr) => acc + parseFloat(curr.monto || 0), 0);
-    const totalPrestamos = prestamos.reduce((acc, curr) => acc + parseFloat(curr.total), 0);
+  const calculateTotals = useCallback((data) => {
+    const totalAbonos = data.reduce((acc, curr) => acc + parseFloat(curr.abono || 0) + parseFloat(curr.interes || 0), 0);
+    const totalGastos = data.reduce((acc, curr) => acc + parseFloat(curr.gasto || 0), 0);
+    const totalPrestamos = data.reduce((acc, curr) => acc + parseFloat(curr.total || 0), 0);
 
     const newTotalUtilidad = totalAbonos;
     const newTotalCaja = initialCaja + totalAbonos - totalGastos - totalPrestamos;
@@ -71,38 +72,37 @@ export const CorteCajaComp = () => {
       const gastosDatos = gastosResponse.data.Data.map(gasto => ({
         ...gasto,
         nombre: gasto.nombre,
-        gasto: parseFloat(-gasto.monto),
+        gasto: parseFloat(gasto.monto),
         fecha_pago: gasto.fecha // Formatea la fecha en español
       }));
 
       setMovimientos(movimientosDatos);
       setPrestamos(prestamosDatos);
       setGastos(gastosDatos);
-      calculateTotals(movimientosDatos, prestamosDatos, gastosDatos);
     } catch (error) {
       console.error('Error al obtener datos:', error);
     }
-  }, [calculateTotals]);
+  }, [RUTA]);
 
   useEffect(() => {
     fetchData();
   }, [fetchData]);
 
-  useEffect(() => {
-    calculateTotals(movimientos, prestamos, gastos);
-  }, [movimientos, prestamos, gastos, calculateTotals]);
-
-  const filterMovimientosByDate = () => {
-    if (!fechaFiltro) return [...movimientos, ...prestamos, ...gastos];
-  
+  const filterMovimientosByDate = useCallback(() => {
     const combinedData = [...movimientos, ...prestamos, ...gastos];
-    return combinedData.filter(item => {
-      // Filtra por fecha en el formato "24 de julio de 2024"
-      return item.fecha_pago.includes(fechaFiltro);
-    });
-  };
+    const filtered = fechaFiltro 
+      ? combinedData.filter(item => item.fecha_pago.includes(fechaFiltro))
+      : combinedData;
 
-  const componentRef = useRef();
+    setFilteredData(filtered);
+    calculateTotals(filtered);
+  }, [fechaFiltro, movimientos, prestamos, gastos, calculateTotals]);
+
+  useEffect(() => {
+    filterMovimientosByDate();
+  }, [filterMovimientosByDate]);
+
+  const componentRef = React.useRef();
 
   return (
     <>
@@ -111,32 +111,29 @@ export const CorteCajaComp = () => {
           <Col>
             <Title level={2}>Corte de Caja</Title>
           </Col>
-          
-          
+
           <div className='botones'>
-         
-          <Col>
-            <Input 
-              placeholder="Ingresa la fecha" 
-              onChange={(e) => setFechaFiltro(e.target.value)} 
-              style={{ width: '200px', marginRight: '10px' }} 
-            />
-          
-            <Button type="primary" onClick={filterMovimientosByDate}>
-              Filtrar
-            </Button>
-          </Col>
-          <Col>
-            <ReactToPrint
-              trigger={() => <Button type="primary">Imprimir</Button>}
-              content={() => componentRef.current}
-            />
-          </Col>
-        </div>
+            <Col>
+              <Input 
+                placeholder="Ingresa la fecha" 
+                onChange={(e) => setFechaFiltro(e.target.value)} 
+                style={{ width: '200px', marginRight: '10px' }} 
+              />
+              <Button type="primary" onClick={() => filterMovimientosByDate()}>
+                Filtrar
+              </Button>
+            </Col>
+            <Col>
+              <ReactToPrint
+                trigger={() => <Button type="primary">Imprimir</Button>}
+                content={() => componentRef.current}
+              />
+            </Col>
+          </div>
         </Row>
-        
+
         <div ref={componentRef}>
-          <Table dataSource={filterMovimientosByDate()} rowKey="id" pagination={true} className='table-responsive'>
+          <Table dataSource={filteredData} rowKey="id" pagination={true} className='table-responsive'>
             <Column title="Nombre" dataIndex="nombre" key="nombre" />
             <Column 
               title="Abono" 

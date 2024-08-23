@@ -1,53 +1,41 @@
 import React, { useEffect, useState } from 'react';
-import { Card, Button, message } from 'antd';
-import { Link} from 'react-router-dom';
+import { Card, Button, message, Row, Col } from 'antd';
+import { Link } from 'react-router-dom';
 import axios from 'axios';
 import MainLayout from '../../components/MainLayout';
 import { useNavigate } from 'react-router-dom';
 import { RUTA } from '../../route';
 
 export const VistaSolicitudesPendientes = () => {
-    
-    const navigate= useNavigate();
-    const [solicitud, setSolicitud]= useState([]);
-    
+    const navigate = useNavigate();
+    const [solicitudes, setSolicitudes] = useState([]);
 
-
-    const getSolicitudes= async() => {
-        const response= await axios.get(`${RUTA}/getSolicitud`); 
-        setSolicitud(response.data.Data);
-    }; 
+    const getSolicitudes = async () => {
+        try {
+            const response = await axios.get(`${RUTA}/getSolicitud`);
+            setSolicitudes(response.data.Data);
+        } catch (error) {
+            console.error('Error fetching solicitudes:', error);
+        }
+    };
 
     useEffect(() => {
         getSolicitudes();
     }, []);
-    /*useEffect(() => {
-        const solicitudesGuardadas = localStorage.getItem('solicitudesPendientes');
-        if (solicitudesGuardadas) {
-            setSolicitudesPendientes(JSON.parse(solicitudesGuardadas));
-            console.log(solicitudesGuardadas);
-        }
-    }, []);*/
 
-    /*const eliminarSolicitud = (index) => {
-        const nuevasSolicitudes = [...solicitudesPendientes];
-        nuevasSolicitudes.splice(index, 1);
-        setSolicitudesPendientes(nuevasSolicitudes);
-        localStorage.setItem('solicitudesPendientes', JSON.stringify(nuevasSolicitudes));
-    };¨*/
-
-    const eliminarSolicitud= async(id) => { 
-        console.log(id);
-
-        const response= await axios.delete(`${RUTA}/eliminarSolicitud/${id}`);
-        if(response.status === 204){
-            message.success('Operación realizada con éxito');
-        }else{
+    const eliminarSolicitud = async (id) => {
+        try {
+            const response = await axios.delete(`${RUTA}/eliminarSolicitud/${id}`);
+            if (response.status === 204) {
+                message.success('Operación realizada con éxito');
+                getSolicitudes();
+            } else {
+                message.error('Error al eliminar solicitud');
+            }
+        } catch (error) {
             message.error('Error al eliminar solicitud');
-        };
-
-        getSolicitudes();
-    }
+        }
+    };
 
     const actualizarMonto = async (cliente, monto) => {
         try {
@@ -65,24 +53,24 @@ export const VistaSolicitudesPendientes = () => {
     };
 
     return (
-        <>
-            
-                {solicitud.map((solicitud, index) => (
-                    <div key={index} style={{ margin: 0 }}>
-                        <Card title={`Solicitud #${index + 1}`} style={{ width: 200 }}>
-                            <Link 
-                                to={`/cliente/${solicitud.nombre}`}
-                                onClick={(event) => handleLinkClick(solicitud.nombre, solicitud.monto, event)}
-                            >
-                                <p><strong>Cliente:</strong> {solicitud.nombre}</p>
-                                <p><strong>Monto:</strong> {solicitud.monto}</p>
-                            </Link>
-                            <Button type="primary" onClick={() => eliminarSolicitud(solicitud.Id)}>Eliminar</Button>
-                        </Card>
-                    </div>
-                ))}
-           
-        </>
+        <Row gutter={16}>
+            {solicitudes.map((solicitud, index) => (
+                <Col xs={24} sm={12} md={8} lg={6} key={index}>
+                    <Card title={`Solicitud #${index + 1}`} style={{ marginBottom: 16, width: 200 }}>
+                        <Link 
+                            to={`/cliente/${solicitud.nombre}`}
+                            onClick={(event) => handleLinkClick(solicitud.nombre, solicitud.monto, event)}
+                        >
+                            <p><strong>Cliente:</strong> {solicitud.nombre}</p>
+                            <p><strong>Monto:</strong> {solicitud.monto}</p>
+                        </Link>
+                        <Button type="primary" onClick={() => eliminarSolicitud(solicitud.Id)}>
+                            Eliminar
+                        </Button>
+                    </Card>
+                </Col>
+            ))}
+        </Row>
     );
 };
 

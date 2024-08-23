@@ -82,7 +82,7 @@ const Profile = () => {
               >
                 <Select placeholder="Selecciona un rol">
                   <Option value='admin'>Administrador</Option>
-                  <Option value='user'>Usuario</Option>
+                  <Option value='cajero-administrador'>Cajero Administrador</Option>
                   <Option value='ventas-campo'>Ventas Campo</Option>
                 </Select>
               </Form.Item>

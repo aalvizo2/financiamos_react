@@ -73,6 +73,15 @@ export const Referencias = () => {
                     >
                       <Input style={{ width: '33%' }} placeholder="Celular" />
                     </Form.Item>
+                    <Form.Item
+                      {...field}
+                      name={[field.name, 'parentezco']}
+                      fieldKey={[field.fieldKey, 'parentezco']}
+                      rules={[{ required: true, message: 'Parentezco' }]}
+                      noStyle
+                    >
+                      <Input style={{ width: '33%' }} placeholder="Parentezco" />
+                    </Form.Item>
                     <Button onClick={() => remove(field.name)} type="link">Remove</Button>
                   </Input.Group>
                 </Form.Item>

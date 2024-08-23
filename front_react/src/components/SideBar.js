@@ -24,6 +24,7 @@ const SideBar = ({ collapsed, onCollapse }) => {
   const [permisos, setPermisos] = useState([]);
   const [numSolicitudesPendientes, setNumSolicitudesPendientes] = useState('');
   const [collapsedState, setCollapsedState] = useState(isMobile);
+  const [selectedKey, setSelectedKey] = useState(location.pathname);
 
   useEffect(() => {
     const handleResize = () => {
@@ -78,7 +79,7 @@ const SideBar = ({ collapsed, onCollapse }) => {
       icon: <DollarCircleOutlined />, 
       label: 'Solicitudes', 
       count: numSolicitudesPendientes > 0 ? numSolicitudesPendientes : null
-     },
+    },
     { key: '/movimientos', icon: <HistoryOutlined />, label: 'Movimientos' },
     { key: '/corteCaja', icon: <SnippetsOutlined />, label: 'Corte de Caja' },
     { key: '/cobranza', icon: <FaMoneyCheckAlt />, label: 'Cobranza' },
@@ -100,17 +101,24 @@ const SideBar = ({ collapsed, onCollapse }) => {
     >
       <Menu
         mode='inline'
-        selectedKeys={[location.pathname]}
+        selectedKeys={[selectedKey]}
         style={{ height: '100%', borderRight: 0 }}
+        onSelect={({ key }) => setSelectedKey(key)}
       >
         {permisos.map((permiso) => {
           const option = adminOptions.find(option => option.key === `/${permiso}`);
           return option ? (
             <Menu.Item key={option.key} icon={option.icon}>
-              <span>
+              <span style={{ 
+                color: selectedKey === option.key ? '#EB8114' : 'inherit', // Change color when selected
+              }}>
                 {option.label} 
                 {option.count && option.count > 0 && (
-                  <span style={{ marginLeft: 10, color: 'red' }}>
+                  <span style={{ 
+                    color: selectedKey === option.key ? '#EB8114' : 'white', // Match color with menu item when selected
+                    fontSize: collapsed ? '10px' : '12px',
+                    marginLeft: '5px'
+                  }}>
                     ({option.count})
                   </span>
                 )}

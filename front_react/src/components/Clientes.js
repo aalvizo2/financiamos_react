@@ -44,6 +44,7 @@ export const ClientesLista = () => {
       const response = await axios.get(`${RUTA}/cliente/nombre/${clientName}`);
       if (response.status === 200) {
         setClienteActual(response.data);
+        console.log(response.data)
         form.setFieldsValue(response.data); // Set form values
         setModalVisible(true);
         getDocumentos(clientName);
@@ -190,17 +191,19 @@ export const ClientesLista = () => {
     };*/
   
 
-    const renderReferencias = (referencias, domicilios, celulares) => {
-    if (!referencias || !domicilios || !celulares) return null;
+    const renderReferencias = (referencias, domicilios, celulares, parentezco) => {
+    if (!referencias || !domicilios || !celulares || !parentezco) return null;
     const referenciasList = JSON.parse(referencias);
     const domiciliosList = JSON.parse(domicilios);
     const celularesList = JSON.parse(celulares);
+    const parentezcoRef= JSON.parse(parentezco);
 
     return referenciasList.map((referencia, index) => (
       <div key={index} style={{ marginBottom: '10px' }}>
         <p><strong>Referencia:</strong> {referencia}</p>
         <p><strong>Dirección:</strong> {domiciliosList[index]}</p>
         <p><strong>Celular:</strong> {celularesList[index]}</p>
+        <p><strong>Parentezco:</strong>{parentezcoRef[index]}</p>
       </div>
     ));
   };
@@ -350,7 +353,7 @@ export const ClientesLista = () => {
                 <h3>Referencias</h3>
                 <Form.Item>
                   <div style={{ maxHeight: '300px', overflowY: 'auto' }}>
-                    {renderReferencias(clienteActual.referencia, clienteActual.referencia_dom, clienteActual.referencia_cel)}
+                    {renderReferencias(clienteActual.referencia, clienteActual.referencia_dom, clienteActual.referencia_cel, clienteActual.parentezco)}
                   </div>
                 </Form.Item>
               </Col>
